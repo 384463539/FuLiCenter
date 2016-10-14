@@ -1,4 +1,4 @@
-package cn.ucai.fulicenter.utils;
+package ucai.cn.day_filicenter.utils;
 
 import android.content.Context;
 

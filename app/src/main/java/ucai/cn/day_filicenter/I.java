@@ -1,4 +1,4 @@
-package cn.ucai.fulicenter;
+package ucai.cn.day_filicenter;
 
 
 public interface I {
