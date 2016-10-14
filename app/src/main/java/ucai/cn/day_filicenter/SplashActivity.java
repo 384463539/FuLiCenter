@@ -6,6 +6,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 
+import ucai.cn.day_filicenter.utils.MFGT;
+
 public class SplashActivity extends AppCompatActivity {
     long a = 2000;
 
@@ -31,7 +33,7 @@ public class SplashActivity extends AppCompatActivity {
                         e.printStackTrace();
                     }
                 }
-                startActivity(new Intent(SplashActivity.this, MainActivity.class));
+                MFGT.startActivity(SplashActivity.this,MainActivity.class);
                 finish();
             }
         }).start();

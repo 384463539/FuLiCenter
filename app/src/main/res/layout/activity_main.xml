@@ -7,6 +7,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
+    android:background="@drawable/bj"
     tools:context="ucai.cn.day_filicenter.MainActivity">
 
     <LinearLayout
@@ -17,6 +18,7 @@
         android:orientation="horizontal">
 
         <ImageView
+            android:onClick="btniv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/back" />

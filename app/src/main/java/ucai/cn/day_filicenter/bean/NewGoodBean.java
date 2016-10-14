@@ -47,6 +47,25 @@ public class NewGoodBean {
     private int addTime;
     private boolean promote;
 
+    private String shareUrl;
+    private Object properties;
+
+    public String getShareUrl() {
+        return shareUrl;
+    }
+
+    public void setShareUrl(String shareUrl) {
+        this.shareUrl = shareUrl;
+    }
+
+    public Object getProperties() {
+        return properties;
+    }
+
+    public void setProperties(Object properties) {
+        this.properties = properties;
+    }
+
     public int getId() {
         return id;
     }
@@ -224,6 +243,8 @@ public class NewGoodBean {
                 ", colorUrl='" + colorUrl + '\'' +
                 ", addTime=" + addTime +
                 ", promote=" + promote +
+                ", shareUrl='" + shareUrl + '\'' +
+                ", properties=" + properties +
                 '}';
     }
 }
