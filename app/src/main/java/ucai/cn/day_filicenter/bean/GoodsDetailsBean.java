@@ -40,7 +40,7 @@ public class GoodsDetailsBean {
     private String goodsImg;
     private long addTime;
     private String shareUrl;
-    private Object properties;
+    private PropertiesBean[] properties;
     private boolean promote;
 
     public int getId() {
@@ -163,11 +163,11 @@ public class GoodsDetailsBean {
         this.shareUrl = shareUrl;
     }
 
-    public Object getProperties() {
+    public PropertiesBean[] getProperties() {
         return properties;
     }
 
-    public void setProperties(Object properties) {
+    public void setProperties(PropertiesBean[] properties) {
         this.properties = properties;
     }
 

@@ -16,12 +16,15 @@ import android.widget.RadioButton;
 import java.util.ArrayList;
 
 import ucai.cn.day_filicenter.R;
+import ucai.cn.day_filicenter.fragment.BoutiqueFragment;
 import ucai.cn.day_filicenter.fragment.NewgoodFragment;
 
 public class HomeActivity extends AppCompatActivity implements View.OnClickListener {
     RadioButton rb_newgood, rb_boutique, rb_category, rb_car, rb_personal;
     NewgoodFragment newgoodFragment;
+    BoutiqueFragment boutiqueFragment;
     ArrayList<Fragment> fragmentList = new ArrayList<>();
+    ArrayList<RadioButton> radioList = new ArrayList<>();
     ViewPager viewPager;
 
     @Override
@@ -34,9 +37,11 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void initFragment() {
-       viewPager = (ViewPager) findViewById(R.id.home_viewpager);
         newgoodFragment = new NewgoodFragment();
         fragmentList.add(newgoodFragment);
+        boutiqueFragment = new BoutiqueFragment();
+        fragmentList.add(boutiqueFragment);
+
         viewPager.setAdapter(new MyAdapter(getSupportFragmentManager()));
     }
 
@@ -47,6 +52,21 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         rb_car.setOnClickListener(this);
         rb_personal.setOnClickListener(this);
 
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                choose(position);
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+            }
+        });
+
     }
 
     private void initView() {
@@ -55,44 +75,44 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         rb_category = (RadioButton) findViewById(R.id.rb_category);
         rb_car = (RadioButton) findViewById(R.id.rb_car);
         rb_personal = (RadioButton) findViewById(R.id.rb_personal);
+        radioList.add(rb_newgood);
+        radioList.add(rb_boutique);
+        radioList.add(rb_category);
+        radioList.add(rb_car);
+        radioList.add(rb_personal);
+        viewPager = (ViewPager) findViewById(R.id.home_viewpager);
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.rb_newgood:
-                hc();
-                rb_personal.setChecked(true);
-                rb_personal.setChecked(false);
-                rb_newgood.setChecked(true);
-//                FragmentTransaction fragmentTransaction = supportFragmentManager.beginTransaction();
-//                fragmentTransaction.replace(R.id.fragment_layout, newgoodFragment);
-//                fragmentTransaction.commit();
+                choose(0);
                 viewPager.setCurrentItem(0);
                 break;
             case R.id.rb_boutique:
-                hc();
-
+                choose(1);
+                viewPager.setCurrentItem(1);
                 break;
             case R.id.rb_category:
-                hc();
-
+                choose(2);
                 break;
             case R.id.rb_car:
-                rb_newgood.setChecked(true);
-                rb_newgood.setChecked(false);
-
+                choose(3);
                 break;
             case R.id.rb_personal:
-                hc();
-
+                choose(4);
                 break;
         }
     }
 
-    public void hc() {
-        if (rb_car.isChecked()) {
-            rb_car.setChecked(false);
+    public void choose(int a) {
+        for (int i = 0; i < radioList.size(); i++) {
+            if (i == a) {
+                radioList.get(i).setChecked(true);
+            } else {
+                radioList.get(i).setChecked(false);
+            }
         }
     }
 

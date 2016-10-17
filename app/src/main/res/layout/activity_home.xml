@@ -11,10 +11,6 @@
         android:layout_alignParentBottom="true"
         android:background="#3856d2de">
 
-        <RadioGroup
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
 
             <RadioButton
                 android:id="@+id/rb_newgood"
@@ -96,7 +92,6 @@
                 android:paddingTop="5dp"
                 android:text="我"
                 android:textColor="@drawable/textcolor" />
-        </RadioGroup>
     </LinearLayout>
 
     <android.support.v4.view.ViewPager
@@ -104,14 +99,5 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@id/menu_layout">
-
     </android.support.v4.view.ViewPager>
-    <!--<LinearLayout-->
-    <!--android:id="@+id/fragment_layout"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="match_parent"-->
-    <!--android:layout_above="@id/menu_layout"-->
-    <!--android:orientation="horizontal">-->
-
-    <!--</LinearLayout>-->
 </RelativeLayout>

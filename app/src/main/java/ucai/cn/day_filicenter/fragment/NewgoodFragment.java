@@ -3,9 +3,12 @@ package ucai.cn.day_filicenter.fragment;
 
 import android.app.Notification;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
@@ -24,6 +27,7 @@ import java.util.Map;
 
 import ucai.cn.day_filicenter.I;
 import ucai.cn.day_filicenter.R;
+import ucai.cn.day_filicenter.activity.GoodsDetailsActivity;
 import ucai.cn.day_filicenter.bean.NewGoodBean;
 import ucai.cn.day_filicenter.bean.Result;
 import ucai.cn.day_filicenter.utils.ImageLoader;
@@ -34,13 +38,16 @@ import ucai.cn.day_filicenter.utils.OkHttpUtils;
  * A simple {@link Fragment} subclass.
  */
 public class NewgoodFragment extends Fragment {
+
+    private int id = 0;
     View view;
     ArrayList<NewGoodBean> myList;
     MyAdapter myAdapter;
     SwipeRefreshLayout srl;
     RecyclerView rv;
-    StaggeredGridLayoutManager gridLayoutManager;
+    GridLayoutManager gridLayoutManager;
     TextView tv;
+    View.OnClickListener myOnClickListener;
 
     int num = 1;
     int nNewstate;
@@ -49,6 +56,9 @@ public class NewgoodFragment extends Fragment {
         // Required empty public constructor
     }
 
+    public void setId(int a) {
+        id = a;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -65,8 +75,8 @@ public class NewgoodFragment extends Fragment {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
-//                int a = gridLayoutManager.findLastVisibleItemPositions();
-                if (myAdapter.isMore && newState == RecyclerView.SCROLL_STATE_IDLE) {
+                int a = gridLayoutManager.findLastVisibleItemPosition();
+                if (a >= myAdapter.getItemCount() - 1 && myAdapter.isMore && newState == RecyclerView.SCROLL_STATE_IDLE) {
                     num++;
                     initData(I.ACTION_PULL_UP, num);
                 }
@@ -83,12 +93,13 @@ public class NewgoodFragment extends Fragment {
                 initData(I.ACTION_PULL_DOWN, num);
             }
         });
+
     }
 
     private void initData(final int type, int num) {
         final OkHttpUtils<NewGoodBean[]> utils = new OkHttpUtils<>(getActivity());
         utils.setRequestUrl(I.REQUEST_FIND_NEW_BOUTIQUE_GOODS)
-                .addParam("cat_id", 0 + "")
+                .addParam("cat_id", id + "")
                 .addParam(I.PAGE_ID, num + "")
                 .addParam(I.PAGE_SIZE, 4 + "")
                 .targetClass(NewGoodBean[].class)
@@ -133,23 +144,41 @@ public class NewgoodFragment extends Fragment {
         myAdapter = new MyAdapter(getActivity(), myList);
         rv = (RecyclerView) view.findViewById(R.id.newgood_rv);
         rv.setAdapter(myAdapter);
-        gridLayoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
+        gridLayoutManager = new GridLayoutManager(getActivity(), I.COLUM_NUM);
+        gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+            @Override
+            public int getSpanSize(int position) {
+                return position == myAdapter.getItemCount() - 1 ? I.COLUM_NUM : 1;
+            }
+        });
         rv.setLayoutManager(gridLayoutManager);
 
         srl = (SwipeRefreshLayout) view.findViewById(R.id.newgood_srl);
         tv = (TextView) view.findViewById(R.id.newgood_head);
+
+        myOnClickListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), GoodsDetailsActivity.class);
+                intent.putExtra("goodsid", (Integer) v.getTag());
+                startActivity(intent);
+            }
+        };
     }
 
 
     class MyHolder1 extends RecyclerView.ViewHolder {
         ImageView iv;
         TextView name, price;
+        View view;
 
         public MyHolder1(View itemView) {
             super(itemView);
             iv = (ImageView) itemView.findViewById(R.id.newgood_item_iv);
             name = (TextView) itemView.findViewById(R.id.newgood_item_name);
             price = (TextView) itemView.findViewById(R.id.newgood_item_price);
+            view = itemView;
+            view.setOnClickListener(myOnClickListener);
         }
     }
 
@@ -219,6 +248,7 @@ public class NewgoodFragment extends Fragment {
                 myHolder1.iv.setImageResource(R.drawable.category_child);
                 myHolder1.name.setText(goods.getGoodsName());
                 myHolder1.price.setText(goods.getShopPrice());
+                myHolder1.view.setTag(goods.getGoodsId());
                 String str = I.SERVER_ROOT + I.REQUEST_DOWNLOAD_IMAGE;
                 ImageLoader.build(str)
                         .addParam(I.IMAGE_URL, goods.getGoodsThumb())

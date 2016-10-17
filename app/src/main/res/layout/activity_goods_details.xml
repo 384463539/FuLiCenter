@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:id="@+id/details_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/good_detail_title_bg"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/back" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:text="商品详情"
+            android:textSize="22sp" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_margin="5dp"
+            android:src="@mipmap/bg_cart_selected" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_margin="5dp"
+            android:src="@mipmap/bg_collect_in" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_margin="5dp"
+            android:src="@drawable/selector_share_bg" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/iv_layout"
+        android:layout_width="280dp"
+        android:layout_height="280dp"
+        android:layout_centerInParent="true"
+        android:gravity="center"
+        android:padding="25dp">
+
+        <ImageView
+            android:id="@+id/details_iv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/category_child" />
+    </LinearLayout>
+
+
+    <TextView
+        android:id="@+id/details_tv_cname"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/iv_layout"
+        android:layout_alignLeft="@id/iv_layout"
+        android:text="中文名字"
+        android:textSize="17sp" />
+
+    <TextView
+        android:id="@+id/details_tv_wname"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/details_tv_cname"
+        android:layout_alignLeft="@id/iv_layout"
+        android:layout_marginBottom="5dp"
+        android:text="英文名字"
+        android:textSize="17sp" />
+
+    <TextView
+        android:id="@+id/details_tv_price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/iv_layout"
+        android:layout_alignRight="@id/iv_layout"
+        android:text="价格"
+        android:textSize="17sp" />
+
+    <ucai.cn.day_filicenter.views.FlowIndicator
+        android:id="@+id/details_zv_cator"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/iv_layout"
+        app:count="4"
+        app:focus="0"
+        app:focus_color="@color/colorAccent"
+        app:normal_color="#cfcfcf"
+        app:r="10dp"
+        app:space="0dp" />
+
+    <TextView
+        android:id="@+id/details_tv_brief"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@id/iv_layout"
+        android:layout_alignRight="@id/iv_layout"
+        android:layout_below="@id/details_zv_cator"
+        android:layout_marginTop="10dp"
+        android:text="物品介绍物品介绍物品介绍物品介绍物品介绍物品介绍物品介绍物品介绍物品介绍"
+        android:textSize="17sp" />
+</RelativeLayout>

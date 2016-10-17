@@ -23,7 +23,7 @@ public class PropertiesBean {
     private String colorCode;
     private String colorImg;
     private String colorUrl;
-    private Object albums;
+    private AlbumsBean[] albums;
 
     public int getId() {
         return id;
@@ -81,11 +81,11 @@ public class PropertiesBean {
         this.colorUrl = colorUrl;
     }
 
-    public Object getAlbums() {
+    public AlbumsBean[] getAlbums() {
         return albums;
     }
 
-    public void setAlbums(Object albums) {
+    public void setAlbums(AlbumsBean[] albums) {
         this.albums = albums;
     }
 
