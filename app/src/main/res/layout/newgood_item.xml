@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_margin="10dp"
+    app:cardCornerRadius="10dp"
+    app:cardElevation="5dp"
+    android:clickable="true"
+    app:cardBackgroundColor="#e2dfdf"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:background="#fff"
+        android:layout_margin="11dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/newgood_item_iv"
+            android:layout_width="160dp"
+            android:layout_height="210dp"
+            android:src="@drawable/category_child" />
+
+        <TextView
+            android:id="@+id/newgood_item_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:singleLine="true"
+            android:text="商品详情：ccccccc"
+            android:textSize="15sp" />
+
+        <TextView
+            android:id="@+id/newgood_item_price"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="商品价格"
+            android:textSize="13sp" />
+    </LinearLayout>
+</android.support.v7.widget.CardView>

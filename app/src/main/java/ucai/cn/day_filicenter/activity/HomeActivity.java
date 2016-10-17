@@ -1,75 +1,43 @@
 package ucai.cn.day_filicenter.activity;
 
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.ExpandableListView;
 import android.widget.RadioButton;
 
+import java.util.ArrayList;
+
 import ucai.cn.day_filicenter.R;
+import ucai.cn.day_filicenter.fragment.NewgoodFragment;
 
 public class HomeActivity extends AppCompatActivity implements View.OnClickListener {
     RadioButton rb_newgood, rb_boutique, rb_category, rb_car, rb_personal;
-    ExpandableListView elv;
+    NewgoodFragment newgoodFragment;
+    ArrayList<Fragment> fragmentList = new ArrayList<>();
+    ViewPager viewPager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         initView();
         setListener();
-        elv.setAdapter(new BaseExpandableListAdapter() {
-            @Override
-            public int getGroupCount() {
-                return 0;
-            }
+        initFragment();
+    }
 
-            @Override
-            public int getChildrenCount(int groupPosition) {
-                return 0;
-            }
-
-            @Override
-            public Object getGroup(int groupPosition) {
-                return null;
-            }
-
-            @Override
-            public Object getChild(int groupPosition, int childPosition) {
-                return null;
-            }
-
-            @Override
-            public long getGroupId(int groupPosition) {
-                return 0;
-            }
-
-            @Override
-            public long getChildId(int groupPosition, int childPosition) {
-                return 0;
-            }
-
-            @Override
-            public boolean hasStableIds() {
-                return false;
-            }
-
-            @Override
-            public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
-                return null;
-            }
-
-            @Override
-            public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
-                return null;
-            }
-
-            @Override
-            public boolean isChildSelectable(int groupPosition, int childPosition) {
-                return false;
-            }
-        });
+    private void initFragment() {
+       viewPager = (ViewPager) findViewById(R.id.home_viewpager);
+        newgoodFragment = new NewgoodFragment();
+        fragmentList.add(newgoodFragment);
+        viewPager.setAdapter(new MyAdapter(getSupportFragmentManager()));
     }
 
     private void setListener() {
@@ -87,37 +55,61 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         rb_category = (RadioButton) findViewById(R.id.rb_category);
         rb_car = (RadioButton) findViewById(R.id.rb_car);
         rb_personal = (RadioButton) findViewById(R.id.rb_personal);
-
-        elv = (ExpandableListView) findViewById(R.id.elv);
     }
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.rb_newgood:
                 hc();
+                rb_personal.setChecked(true);
+                rb_personal.setChecked(false);
+                rb_newgood.setChecked(true);
+//                FragmentTransaction fragmentTransaction = supportFragmentManager.beginTransaction();
+//                fragmentTransaction.replace(R.id.fragment_layout, newgoodFragment);
+//                fragmentTransaction.commit();
+                viewPager.setCurrentItem(0);
                 break;
             case R.id.rb_boutique:
                 hc();
+
                 break;
             case R.id.rb_category:
                 hc();
+
                 break;
             case R.id.rb_car:
+                rb_newgood.setChecked(true);
                 rb_newgood.setChecked(false);
-                rb_boutique.setChecked(false);
-                rb_category.setChecked(false);
-                rb_personal.setChecked(false);
+
                 break;
             case R.id.rb_personal:
                 hc();
-                break;
 
+                break;
         }
     }
-    public void hc(){
-        if (rb_car.isChecked()){
+
+    public void hc() {
+        if (rb_car.isChecked()) {
             rb_car.setChecked(false);
+        }
+    }
+
+    class MyAdapter extends FragmentPagerAdapter {
+
+        public MyAdapter(FragmentManager fm) {
+            super(fm);
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            return fragmentList.get(position);
+        }
+
+        @Override
+        public int getCount() {
+            return fragmentList.size();
         }
     }
 }

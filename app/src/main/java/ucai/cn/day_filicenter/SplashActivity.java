@@ -28,14 +28,19 @@ public class SplashActivity extends AppCompatActivity {
                 if (a - time > 0) {
                     try {
                         Thread.sleep(a - time);
-                        Log.i("main","ssss");
+                        Log.i("main", "ssss");
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
                 }
-                MFGT.startActivity(SplashActivity.this,MainActivity.class);
-                finish();
+                MFGT.startActivity(SplashActivity.this, MainActivity.class);
             }
         }).start();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        finish();
     }
 }
