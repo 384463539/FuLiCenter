@@ -21,4 +21,10 @@ public class MFGT {
         context.startActivity(intent);
         context.overridePendingTransition(R.anim.push_left_in,R.anim.push_left_out);
     }
+//    public static void startActivityB(Activity context,String imgerUrl){
+//        Intent intent = new Intent();
+//        intent.setClass(context,);
+//        context.startActivity(intent);
+//        context.overridePendingTransition(R.anim.push_left_in,R.anim.push_left_out);
+//    }
 }

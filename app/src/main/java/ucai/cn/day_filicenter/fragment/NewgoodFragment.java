@@ -5,6 +5,9 @@ import android.app.Notification;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.os.SystemClock;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -48,7 +51,6 @@ public class NewgoodFragment extends Fragment {
     GridLayoutManager gridLayoutManager;
     TextView tv;
     View.OnClickListener myOnClickListener;
-
     int num = 1;
     int nNewstate;
 
@@ -69,6 +71,7 @@ public class NewgoodFragment extends Fragment {
         setListener();
         return view;
     }
+
 
     private void setListener() {
         rv.setOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -145,12 +148,14 @@ public class NewgoodFragment extends Fragment {
         rv = (RecyclerView) view.findViewById(R.id.newgood_rv);
         rv.setAdapter(myAdapter);
         gridLayoutManager = new GridLayoutManager(getActivity(), I.COLUM_NUM);
+        //设置最后一列跨两行
         gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override
             public int getSpanSize(int position) {
                 return position == myAdapter.getItemCount() - 1 ? I.COLUM_NUM : 1;
             }
         });
+
         rv.setLayoutManager(gridLayoutManager);
 
         srl = (SwipeRefreshLayout) view.findViewById(R.id.newgood_srl);
@@ -162,6 +167,7 @@ public class NewgoodFragment extends Fragment {
                 Intent intent = new Intent(getActivity(), GoodsDetailsActivity.class);
                 intent.putExtra("goodsid", (Integer) v.getTag());
                 startActivity(intent);
+                getActivity().overridePendingTransition(R.anim.push_left_in,R.anim.push_left_out);
             }
         };
     }

@@ -1,26 +1,26 @@
 package ucai.cn.day_filicenter.activity;
 
-import android.app.ProgressDialog;
-import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
+import android.os.SystemClock;
+import android.support.v7.app.AppCompatActivity;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
-import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.google.gson.Gson;
-
-import java.util.Map;
-
+import butterknife.Bind;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 import ucai.cn.day_filicenter.I;
 import ucai.cn.day_filicenter.R;
 import ucai.cn.day_filicenter.bean.AlbumsBean;
 import ucai.cn.day_filicenter.bean.GoodsDetailsBean;
 import ucai.cn.day_filicenter.bean.PropertiesBean;
 import ucai.cn.day_filicenter.utils.ImageLoader;
+import ucai.cn.day_filicenter.utils.MFGT;
 import ucai.cn.day_filicenter.utils.OkHttpUtils;
 import ucai.cn.day_filicenter.views.FlowIndicator;
 
@@ -30,13 +30,63 @@ public class GoodsDetailsActivity extends AppCompatActivity {
     FlowIndicator indicator;
     GestureDetector mgestureDetector;
     AlbumsBean[] aArr;
+    Handler mainhandler;
+    MyGesture myGesture;
+    Thread mythread;
+    Handler workhandler;
+    boolean stop = false;
+    int a = 0;
+    @Bind(R.id.goods_iv_back)
+    ImageView goodsIvBack;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_goods_details);
+        ButterKnife.bind(this);
         initView();
         initData();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+    }
+
+    private void setThread() {
+        if (mythread == null) {
+            mythread = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    Looper.prepare();
+                    workhandler = new Handler(new Handler.Callback() {
+                        @Override
+                        public boolean handleMessage(Message msg) {
+                            runFor();
+                            return false;
+                        }
+                    });
+                    runFor();
+                    Looper.loop();
+                }
+
+                public void runFor() {
+                    for (int i = a + 1; i <= aArr.length && !stop; i++) {
+                        SystemClock.sleep(800);
+                        Message message = Message.obtain();
+                        message.arg1 = i - 1;
+                        mainhandler.sendMessage(message);
+                        if (i == aArr.length) {
+                            i = 0;
+                        }
+                    }
+                }
+            });
+        }
+        if (aArr.length > 1) {
+            mythread.start();
+        }
     }
 
     @Override
@@ -63,6 +113,7 @@ public class GoodsDetailsActivity extends AppCompatActivity {
                         aArr = propertiesBean.getAlbums();
                         indicator.setCount(aArr.length);
                         initInMager(aArr[0].getImgUrl());
+                        setThread();
                     }
 
                     @Override
@@ -85,11 +136,31 @@ public class GoodsDetailsActivity extends AppCompatActivity {
         details_tv_brief = (TextView) findViewById(R.id.details_tv_brief);
         details_tv_price = (TextView) findViewById(R.id.details_tv_price);
         indicator = (FlowIndicator) findViewById(R.id.details_zv_cator);
-        mgestureDetector = new GestureDetector(this, new MyGesture());
+        myGesture = new MyGesture();
+        mgestureDetector = new GestureDetector(this, myGesture);
+        mainhandler = new Handler(new Handler.Callback() {
+            @Override
+            public boolean handleMessage(Message msg) {
+                myGesture.setView(msg.arg1);
+                return false;
+            }
+        });
     }
 
+    @OnClick(R.id.goods_iv_back)
+    public void onClick() {
+        MFGT.finish(this);
+    }
+
+
     class MyGesture extends GestureDetector.SimpleOnGestureListener {
-        int a = 0;
+        @Override
+        public boolean onDown(MotionEvent e) {
+            if (aArr.length > 1) {
+                stop = true;
+            }
+            return super.onDown(e);
+        }
 
         @Override
         public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
@@ -104,7 +175,7 @@ public class GoodsDetailsActivity extends AppCompatActivity {
             } else if (e1.getX() < e2.getX() && Math.abs(velocityX) > 30) {
                 if (a != aArr.length - 1) {
                     a++;
-                    setView(a);;
+                    setView(a);
                 } else {
                     a = 0;
                     setView(a);
@@ -112,7 +183,8 @@ public class GoodsDetailsActivity extends AppCompatActivity {
             }
             return super.onFling(e1, e2, velocityX, velocityY);
         }
-        public void setView(int n){
+
+        public void setView(int n) {
             indicator.setFocus(n);
             initInMager(aArr[n].getImgUrl());
         }
