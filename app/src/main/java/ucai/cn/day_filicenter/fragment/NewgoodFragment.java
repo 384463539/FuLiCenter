@@ -52,10 +52,9 @@ public class NewgoodFragment extends Fragment {
     TextView tv;
     View.OnClickListener myOnClickListener;
     int num = 1;
-    int nNewstate;
 
     public NewgoodFragment() {
-        // Required empty public constructor
+
     }
 
     public void setId(int a) {
@@ -72,6 +71,11 @@ public class NewgoodFragment extends Fragment {
         return view;
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        initData(I.ACTION_DOWNLOAD, num);
+    }
 
     private void setListener() {
         rv.setOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -167,7 +171,7 @@ public class NewgoodFragment extends Fragment {
                 Intent intent = new Intent(getActivity(), GoodsDetailsActivity.class);
                 intent.putExtra("goodsid", (Integer) v.getTag());
                 startActivity(intent);
-                getActivity().overridePendingTransition(R.anim.push_left_in,R.anim.push_left_out);
+                getActivity().overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
             }
         };
     }

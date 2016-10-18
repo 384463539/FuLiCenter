@@ -5,6 +5,7 @@ import android.content.Intent;
 
 import ucai.cn.day_filicenter.MainActivity;
 import ucai.cn.day_filicenter.R;
+import ucai.cn.day_filicenter.activity.GoodsDetailsActivity;
 
 
 public class MFGT {
@@ -21,10 +22,12 @@ public class MFGT {
         context.startActivity(intent);
         context.overridePendingTransition(R.anim.push_left_in,R.anim.push_left_out);
     }
-//    public static void startActivityB(Activity context,String imgerUrl){
-//        Intent intent = new Intent();
-//        intent.setClass(context,);
-//        context.startActivity(intent);
-//        context.overridePendingTransition(R.anim.push_left_in,R.anim.push_left_out);
-//    }
+    public static void startActivityB(Activity context,Class<?> cls,int id,String name){
+        Intent intent = new Intent();
+        intent.putExtra("id",id);
+        intent.putExtra("name",name);
+        intent.setClass(context, cls);
+        context.startActivity(intent);
+        context.overridePendingTransition(R.anim.push_left_in,R.anim.push_left_out);
+    }
 }

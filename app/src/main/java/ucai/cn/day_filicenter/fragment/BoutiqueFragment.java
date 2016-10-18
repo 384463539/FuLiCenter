@@ -17,8 +17,10 @@ import java.util.ArrayList;
 
 import ucai.cn.day_filicenter.I;
 import ucai.cn.day_filicenter.R;
+import ucai.cn.day_filicenter.activity.BoutiqueActivity;
 import ucai.cn.day_filicenter.bean.BoutiqueBean;
 import ucai.cn.day_filicenter.utils.ImageLoader;
+import ucai.cn.day_filicenter.utils.MFGT;
 import ucai.cn.day_filicenter.utils.OkHttpUtils;
 
 /**
@@ -31,6 +33,8 @@ public class BoutiqueFragment extends Fragment {
     ArrayList<BoutiqueBean> myList;
     RecyclerView rv;
     LinearLayoutManager linearLayoutManager;
+    View.OnClickListener clickListener;
+
     public BoutiqueFragment() {
     }
 
@@ -41,7 +45,11 @@ public class BoutiqueFragment extends Fragment {
         view = inflater.inflate(R.layout.fragment_boutique, container, false);
         initView();
         initData();
+        setListener();
         return view;
+    }
+
+    private void setListener() {
     }
 
     private void initData() {
@@ -69,11 +77,20 @@ public class BoutiqueFragment extends Fragment {
         rv.setAdapter(myAdapter);
         linearLayoutManager = new LinearLayoutManager(getActivity());
         rv.setLayoutManager(linearLayoutManager);
+
+        clickListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                BoutiqueBean bbean = (BoutiqueBean) v.getTag();
+                MFGT.startActivityB(getActivity(), BoutiqueActivity.class, bbean.getId(), bbean.getName());
+            }
+        };
     }
 
     class MyHolder1 extends RecyclerView.ViewHolder {
         ImageView iv;
         TextView tv_title, tv_description, tv_name;
+        View view;
 
         public MyHolder1(View itemView) {
             super(itemView);
@@ -81,6 +98,8 @@ public class BoutiqueFragment extends Fragment {
             tv_title = (TextView) itemView.findViewById(R.id.boutique_tv_title);
             tv_name = (TextView) itemView.findViewById(R.id.boutique_tv_name);
             tv_description = (TextView) itemView.findViewById(R.id.boutique_tv_description);
+            view = itemView;
+            view.setOnClickListener(clickListener);
         }
     }
 
@@ -116,6 +135,7 @@ public class BoutiqueFragment extends Fragment {
             myHolder1.tv_title.setText(boutiqueBean.getTitle());
             myHolder1.tv_description.setText(boutiqueBean.getDescription());
             myHolder1.tv_name.setText(boutiqueBean.getName());
+            myHolder1.view.setTag(boutiqueBean);
             String str = I.SERVER_ROOT + I.REQUEST_DOWNLOAD_IMAGE;
             ImageLoader.build(str)
                     .addParam(I.IMAGE_URL, boutiqueBean.getImageurl())
