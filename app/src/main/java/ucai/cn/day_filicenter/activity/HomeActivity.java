@@ -57,12 +57,10 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
             }
-
             @Override
             public void onPageSelected(int position) {
                 choose(position);
             }
-
             @Override
             public void onPageScrollStateChanged(int state) {
             }

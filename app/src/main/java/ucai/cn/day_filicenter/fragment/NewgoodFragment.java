@@ -66,7 +66,6 @@ public class NewgoodFragment extends Fragment {
                              Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_newgood, container, false);
         initView();
-        initData(I.ACTION_DOWNLOAD, num);
         setListener();
         return view;
     }
