@@ -2,6 +2,7 @@ package ucai.cn.day_filicenter.fragment;
 
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.support.v4.app.Fragment;
@@ -20,10 +21,12 @@ import java.util.Arrays;
 
 import ucai.cn.day_filicenter.I;
 import ucai.cn.day_filicenter.R;
+import ucai.cn.day_filicenter.activity.CategotyActivity;
 import ucai.cn.day_filicenter.bean.CategoryChildBean;
 import ucai.cn.day_filicenter.bean.CategoryGroupBean;
 import ucai.cn.day_filicenter.utils.ImageLoader;
 import ucai.cn.day_filicenter.utils.L;
+import ucai.cn.day_filicenter.utils.MFGT;
 import ucai.cn.day_filicenter.utils.OkHttpUtils;
 
 /**
@@ -49,19 +52,17 @@ public class CategoryFragment extends Fragment {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_category, container, false);
         initData();
-//        setListener();
         return view;
     }
 
     private void setListener() {
-//        elv.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
-//            @Override
-//            public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
-//                Toast.makeText(getActivity(), groupPosition + " " + childPosition, Toast.LENGTH_SHORT).show();
-//
-//                return false;
-//            }
-//        });
+        elv.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
+            @Override
+            public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
+                MFGT.startActivityB(getActivity(), CategotyActivity.class, childList.get(groupPosition).get(childPosition).getId(), groupList.get(groupPosition).getName());
+                return false;
+            }
+        });
     }
 
     private void initData() {
@@ -105,6 +106,7 @@ public class CategoryFragment extends Fragment {
                     });
         }
         initView();
+        setListener();
     }
 
     private void initView() {
