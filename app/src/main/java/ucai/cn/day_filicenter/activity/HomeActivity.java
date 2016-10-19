@@ -17,12 +17,14 @@ import java.util.ArrayList;
 
 import ucai.cn.day_filicenter.R;
 import ucai.cn.day_filicenter.fragment.BoutiqueFragment;
+import ucai.cn.day_filicenter.fragment.CategoryFragment;
 import ucai.cn.day_filicenter.fragment.NewgoodFragment;
 
 public class HomeActivity extends AppCompatActivity implements View.OnClickListener {
     RadioButton rb_newgood, rb_boutique, rb_category, rb_car, rb_personal;
     NewgoodFragment newgoodFragment;
     BoutiqueFragment boutiqueFragment;
+    CategoryFragment categoryFragment;
     ArrayList<Fragment> fragmentList = new ArrayList<>();
     ArrayList<RadioButton> radioList = new ArrayList<>();
     ViewPager viewPager;
@@ -42,7 +44,8 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         fragmentList.add(newgoodFragment);
         boutiqueFragment = new BoutiqueFragment();
         fragmentList.add(boutiqueFragment);
-
+        categoryFragment = new CategoryFragment();
+        fragmentList.add(categoryFragment);
         viewPager.setAdapter(new MyAdapter(getSupportFragmentManager()));
     }
 
