@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
@@ -56,6 +57,15 @@ public class CategoryFragment extends Fragment {
     }
 
     private void setListener() {
+        //点击Group，下载此类的二级分类
+        elv.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
+            @Override
+            public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
+                initChildeData(groupList.get(groupPosition), groupPosition);
+                return false;
+            }
+        });
+
         elv.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
             @Override
             public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
@@ -74,7 +84,13 @@ public class CategoryFragment extends Fragment {
                     public void onSuccess(CategoryGroupBean[] result) {
                         ArrayList<CategoryGroupBean> list = utils.array2List(result);
                         groupList = list;
-                        initChildeData(groupList);
+                        for (int i = 0; i < list.size(); i++) {
+                            childList.add(null);
+                        }
+                        initView();
+                        setListener();
+                        //一次下载全部分类的数据
+//                     initChildeData2(groupList);
                     }
 
                     @Override
@@ -84,29 +100,55 @@ public class CategoryFragment extends Fragment {
                 });
     }
 
-    private void initChildeData(ArrayList<CategoryGroupBean> list) {
-        final OkHttpUtils<CategoryChildBean[]> chileutils = new OkHttpUtils<>(getActivity());
-        for (CategoryGroupBean c : list) {
-            SystemClock.sleep(200);
-            chileutils.url(I.SERVER_ROOT + I.REQUEST_FIND_CATEGORY_CHILDREN)
-                    .addParam(I.CategoryChild.PARENT_ID, c.getId() + "")
-                    .addParam(I.PAGE_ID, pagid + "")
-                    .addParam(I.PAGE_SIZE, pagsize + "")
-                    .targetClass(CategoryChildBean[].class)
-                    .execute(new OkHttpUtils.OnCompleteListener<CategoryChildBean[]>() {
-                        @Override
-                        public void onSuccess(CategoryChildBean[] result) {
-                            ArrayList<CategoryChildBean> clist = chileutils.array2List(result);
-                            childList.add(clist);
-                        }
+    //一次加载全部数据
+//    private void initChildeData2(ArrayList<CategoryGroupBean> list) {
+//        final OkHttpUtils<CategoryChildBean[]> chileutils = new OkHttpUtils<>(getActivity());
+//        for (CategoryGroupBean c : list) {
+//            SystemClock.sleep(200);
+//            chileutils.url(I.SERVER_ROOT + I.REQUEST_FIND_CATEGORY_CHILDREN)
+//                    .addParam(I.CategoryChild.PARENT_ID, c.getId() + "")
+//                    .addParam(I.PAGE_ID, pagid + "")
+//                    .addParam(I.PAGE_SIZE, pagsize + "")
+//                    .targetClass(CategoryChildBean[].class)
+//                    .execute(new OkHttpUtils.OnCompleteListener<CategoryChildBean[]>() {
+//                        @Override
+//                        public void onSuccess(CategoryChildBean[] result) {
+//                            ArrayList<CategoryChildBean> clist = chileutils.array2List(result);
+//                            childList.add(clist);
+//                            initView();
+//                            setListener();
+//                        }
+//
+//                        @Override
+//                        public void onError(String error) {
+//                        }
+//                    });
+//        }
+//    }
 
-                        @Override
-                        public void onError(String error) {
+    //点击大类后只下载此类的小类
+    private void initChildeData(CategoryGroupBean cb, final int a) {
+        L.i(cb.toString());
+        final OkHttpUtils<CategoryChildBean[]> chileutils = new OkHttpUtils<>(getActivity());
+        chileutils.url(I.SERVER_ROOT + I.REQUEST_FIND_CATEGORY_CHILDREN)
+                .addParam(I.CategoryChild.PARENT_ID, cb.getId() + "")
+                .addParam(I.PAGE_ID, pagid + "")
+                .addParam(I.PAGE_SIZE, pagsize + "")
+                .targetClass(CategoryChildBean[].class)
+                .execute(new OkHttpUtils.OnCompleteListener<CategoryChildBean[]>() {
+                    @Override
+                    public void onSuccess(CategoryChildBean[] result) {
+                        ArrayList<CategoryChildBean> clist = chileutils.array2List(result);
+                        if (childList.get(a) == null) {
+                            childList.set(a, clist);
+                            myExpandableAdapter.initList(childList);
                         }
-                    });
-        }
-        initView();
-        setListener();
+                    }
+
+                    @Override
+                    public void onError(String error) {
+                    }
+                });
     }
 
     private void initView() {
@@ -127,6 +169,11 @@ public class CategoryFragment extends Fragment {
             this.childList = childList;
         }
 
+        public void initList(ArrayList list) {
+            childList = list;
+            notifyDataSetChanged();
+        }
+
         @Override
         public int getGroupCount() {
             return groupList.size();
@@ -134,7 +181,11 @@ public class CategoryFragment extends Fragment {
 
         @Override
         public int getChildrenCount(int groupPosition) {
-            return childList.get(groupPosition).size();
+            if (childList.get(groupPosition) == null) {
+                return 0;
+            } else {
+                return childList.get(groupPosition).size();
+            }
         }
 
         @Override
@@ -144,7 +195,10 @@ public class CategoryFragment extends Fragment {
 
         @Override
         public Object getChild(int groupPosition, int childPosition) {
-            return childList.get(groupPosition).get(childPosition);
+            if (childList.get(groupPosition).get(childPosition) != null) {
+                return childList.get(groupPosition).get(childPosition);
+            }
+            return null;
         }
 
         @Override
@@ -212,11 +266,15 @@ public class CategoryFragment extends Fragment {
                 cholder = (ChildViewHolder) view.getTag();
             }
             CategoryChildBean categoryChildBean = childList.get(groupPosition).get(childPosition);
-            cholder.name.setText(categoryChildBean.getName());
-            ImageLoader.build(I.SERVER_ROOT + I.REQUEST_DOWNLOAD_IMAGE)
-                    .addParam(I.IMAGE_URL, categoryChildBean.getImageUrl())
-                    .imageView(cholder.civ)
-                    .showImage(context);
+            L.i("11111" + categoryChildBean.toString());
+            if (categoryChildBean != null) {
+                L.i("111");
+                cholder.name.setText(categoryChildBean.getName());
+                ImageLoader.build(I.SERVER_ROOT + I.REQUEST_DOWNLOAD_IMAGE)
+                        .addParam(I.IMAGE_URL, categoryChildBean.getImageUrl())
+                        .imageView(cholder.civ)
+                        .showImage(context);
+            }
             return view;
         }
 
