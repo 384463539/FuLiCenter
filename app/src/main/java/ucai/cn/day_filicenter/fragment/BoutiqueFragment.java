@@ -82,7 +82,7 @@ public class BoutiqueFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 BoutiqueBean bbean = (BoutiqueBean) v.getTag();
-                MFGT.startActivityB(getActivity(), BoutiqueActivity.class, bbean.getId(), bbean.getName());
+                MFGT.startActivityB(getActivity(), BoutiqueActivity.class, bbean.getId(), bbean.getName(),null);
             }
         };
     }

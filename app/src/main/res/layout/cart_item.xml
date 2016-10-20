@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="70dp">
+
+    <RadioButton
+        android:id="@+id/cart_item_rb_choos"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="20dp"
+        android:button="@null"
+        android:drawableRight="@drawable/checkbox_style" />
+
+    <ImageView
+        android:id="@+id/cart_item_iv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="18dp"
+        android:layout_toRightOf="@id/cart_item_rb_choos"
+        android:src="@drawable/back" />
+
+    <TextView
+        android:id="@+id/cart_item_tv_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@id/cart_item_iv"
+        android:layout_marginLeft="15dp"
+        android:layout_toRightOf="@id/cart_item_iv"
+        android:text="物品的名字"
+        android:textColor="@color/orange" />
+
+    <ImageView
+        android:id="@+id/cart_item_iv_add"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/cart_item_tv_name"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="8dp"
+        android:layout_toRightOf="@id/cart_item_iv"
+        android:src="@mipmap/add_cart" />
+
+    <TextView
+        android:id="@+id/cart_item_rv_num"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/cart_item_tv_name"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="8dp"
+        android:layout_toRightOf="@id/cart_item_iv_add"
+        android:text="(2)" />
+
+    <ImageView
+        android:id="@+id/cart_item_iv_delet"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/cart_item_tv_name"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="8dp"
+        android:layout_toRightOf="@id/cart_item_rv_num"
+        android:src="@mipmap/del_cart" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="20dp"
+        android:text="$154"
+        android:textColor="@color/orange"
+        android:textSize="18sp" />
+</RelativeLayout>

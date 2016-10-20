@@ -59,7 +59,7 @@ public class CategoryFragment extends Fragment {
         elv.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
             @Override
             public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
-                if (childList.get(groupPosition)==null){
+                if (childList.get(groupPosition) == null) {
                     initChildeData(groupList.get(groupPosition), groupPosition);
                 }
                 return false;
@@ -69,7 +69,7 @@ public class CategoryFragment extends Fragment {
         elv.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
             @Override
             public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
-                MFGT.startActivityB(getActivity(), CategotyActivity.class, childList.get(groupPosition).get(childPosition).getId(), groupList.get(groupPosition).getName());
+                MFGT.startActivityB(getActivity(), CategotyActivity.class, childList.get(groupPosition).get(childPosition).getId(), groupList.get(groupPosition).getName(), childList.get(groupPosition));
                 return false;
             }
         });

@@ -105,7 +105,7 @@ public class GoodsDetailsActivity extends AppCompatActivity {
                     public void onSuccess(GoodsDetailsBean result) {
                         details_tv_cname.setText(result.getGoodsName());
                         details_tv_wname.setText(result.getGoodsEnglishName());
-                        details_tv_price.setText(result.getShopPrice());
+                        details_tv_price.setText(result.getCurrencyPrice());
                         details_tv_brief.setText(result.getGoodsBrief());
 
                         PropertiesBean[] pArr = result.getProperties();

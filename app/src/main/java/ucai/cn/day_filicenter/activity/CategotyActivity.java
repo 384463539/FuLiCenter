@@ -6,23 +6,22 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Set;
-import java.util.TreeSet;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import ucai.cn.day_filicenter.I;
 import ucai.cn.day_filicenter.R;
+import ucai.cn.day_filicenter.bean.CategoryChildBean;
 import ucai.cn.day_filicenter.bean.NewGoodBean;
 import ucai.cn.day_filicenter.fragment.MyAdapter;
 import ucai.cn.day_filicenter.fragment.NewgoodFragment;
@@ -39,7 +38,8 @@ public class CategotyActivity extends AppCompatActivity {
     GridLayoutManager gridLayoutManager;
     int num = 1;
     SwipeRefreshLayout srl;
-    TextView tv, tvname;
+    TextView tv;
+    //    CatChildFilterButton catChildFilterButton;
     boolean flag = false;
 
 
@@ -54,6 +54,14 @@ public class CategotyActivity extends AppCompatActivity {
     TextView categoryAvTv2;
     @Bind(R.id.category_av_iv2)
     ImageView categoryAvIv2;
+    @Bind(R.id.category_av_tv_name)
+    ucai.cn.day_filicenter.views.CatChildFilterButton categoryAvTvName;
+    @Bind(R.id.category_av_rv)
+    RecyclerView categoryAvRv;
+    @Bind(R.id.category_av_srl)
+    SwipeRefreshLayout categoryAvSrl;
+
+    ArrayList<CategoryChildBean> childList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +71,7 @@ public class CategotyActivity extends AppCompatActivity {
         Intent intent = getIntent();
         id = intent.getIntExtra("id", 774);
         name = intent.getStringExtra("name");
+        childList = (ArrayList<CategoryChildBean>) intent.getSerializableExtra("childList");
         initView();
         initData(I.ACTION_DOWNLOAD, 1);
         setListener();
@@ -98,7 +107,10 @@ public class CategotyActivity extends AppCompatActivity {
         myAdapter = new MyAdapter(this, myList, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Intent intent = new Intent(CategotyActivity.this, GoodsDetailsActivity.class);
+                intent.putExtra("goodsid", (Integer) v.getTag());
+                startActivity(intent);
+                overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
             }
         });
         rv = (RecyclerView) findViewById(R.id.category_av_rv);
@@ -114,8 +126,7 @@ public class CategotyActivity extends AppCompatActivity {
 
         srl = (SwipeRefreshLayout) findViewById(R.id.category_av_srl);
         tv = (TextView) findViewById(R.id.category_av_tvhead);
-        tvname = (TextView) findViewById(R.id.category_av_tv_name);
-        tvname.setText(name);
+        categoryAvTvName.setText(name);
     }
 
     private void initData(final int type, int num) {
@@ -168,7 +179,7 @@ public class CategotyActivity extends AppCompatActivity {
     }
 
 
-    @OnClick({R.id.category_av_title, R.id.category_av_tv1, R.id.category_av_tv2})
+    @OnClick({R.id.category_av_title, R.id.category_av_tv1, R.id.category_av_tv2, R.id.category_av_tv_name})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.category_av_title:
@@ -177,16 +188,19 @@ public class CategotyActivity extends AppCompatActivity {
             case R.id.category_av_tv1:
 //                sortList(myList);
                 flag = !flag;
-                sortList2(myList,flag);
+                sortList2(myList, flag);
                 break;
             case R.id.category_av_tv2:
                 flag = !flag;
-                sortList3(myList,flag);
+                sortList3(myList, flag);
+                break;
+            case R.id.category_av_tv_name:
+                categoryAvTvName.setOnCatFilterClickListener(name, childList);
                 break;
         }
     }
 
-    public void sortList2(ArrayList<NewGoodBean> list,boolean flag) {
+    public void sortList2(ArrayList<NewGoodBean> list, boolean flag) {
         if (flag) {
             categoryAvIv1.setImageResource(R.drawable.arrow_order_up);
         } else {
@@ -196,7 +210,7 @@ public class CategotyActivity extends AppCompatActivity {
         myAdapter.initList(list);
     }
 
-    public void sortList3(ArrayList<NewGoodBean> list,boolean flag) {
+    public void sortList3(ArrayList<NewGoodBean> list, boolean flag) {
         if (flag) {
             categoryAvIv2.setImageResource(R.drawable.arrow_order_up);
         } else {
@@ -213,20 +227,23 @@ public class CategotyActivity extends AppCompatActivity {
         public MyComparator(boolean isDwon) {
             this.isDwon = isDwon;
         }
+
         @Override
         public int compare(NewGoodBean a, NewGoodBean b) {
             if (isDwon) {
-                return Integer.parseInt(b.getShopPrice().substring(1)) - Integer.parseInt(a.getShopPrice().substring(1));
+                return Integer.parseInt(b.getCurrencyPrice().substring(1)) - Integer.parseInt(a.getCurrencyPrice().substring(1));
             }
-            return Integer.parseInt(a.getShopPrice().substring(1)) - Integer.parseInt(b.getShopPrice().substring(1));
+            return Integer.parseInt(a.getCurrencyPrice().substring(1)) - Integer.parseInt(b.getCurrencyPrice().substring(1));
         }
     }
 
     static class MyComparator2 implements Comparator<NewGoodBean> {
         boolean isDwon;
+
         public MyComparator2(boolean isDwon) {
             this.isDwon = isDwon;
         }
+
         @Override
         public int compare(NewGoodBean a, NewGoodBean b) {
             if (isDwon) {
@@ -244,13 +261,13 @@ public class CategotyActivity extends AppCompatActivity {
 //            int a = 0;
 //            for (int j = 1; j < list.size(); j++) {
 //
-//                L.e(Integer.parseInt(list.get(a).getShopPrice().substring(1)) + "   " + Integer.parseInt(list.get(j).getShopPrice().substring(1)));
-//                if (Integer.parseInt(list.get(0).getShopPrice().substring(1)) > Integer.parseInt(list.get(j).getShopPrice().substring(1))) {
+//                L.e(Integer.parseInt(list.get(a).getCurrencyPrice().substring(1)) + "   " + Integer.parseInt(list.get(j).getCurrencyPrice().substring(1)));
+//                if (Integer.parseInt(list.get(0).getCurrencyPrice().substring(1)) > Integer.parseInt(list.get(j).getCurrencyPrice().substring(1))) {
 //                    a = j;
 //                }
 //            }
 //            newlist.add(list.get(a));
-//            L.e(list.get(a).getShopPrice());
+//            L.e(list.get(a).getCurrencyPrice());
 //            list.remove(a);
 //        }
 //        newlist.add(list.get(0));

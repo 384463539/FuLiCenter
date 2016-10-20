@@ -1,0 +1,47 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="ucai.cn.day_filicenter.fragment.CartFragment">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:layout_margin="5dp"
+            android:id="@+id/cart_btn_bay"
+            android:layout_width="100dp"
+            android:layout_height="60dp"
+            android:layout_alignParentRight="true"
+            android:background="@color/tab_bg"
+            android:text="购买"
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/cart_tv_h"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_margin="10dp"
+            android:text="合计：1111"
+            android:textColor="@color/orange"
+            android:textSize="17sp" />
+
+        <TextView
+            android:id="@+id/cart_tv_s"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/cart_tv_h"
+            android:layout_centerHorizontal="true"
+            android:text="节省：111"
+            android:textColor="@color/item_good_price"
+            android:textSize="15sp" />
+    </RelativeLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/cart_srl"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+</LinearLayout>

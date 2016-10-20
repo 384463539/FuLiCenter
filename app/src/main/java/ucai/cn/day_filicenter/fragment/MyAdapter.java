@@ -75,7 +75,7 @@ public class MyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             MyHolder1 myHolder1 = (MyHolder1) holder;
             myHolder1.iv.setImageResource(R.drawable.category_child);
             myHolder1.name.setText(goods.getGoodsName());
-            myHolder1.price.setText(goods.getShopPrice());
+            myHolder1.price.setText(goods.getCurrencyPrice());
             myHolder1.view.setTag(goods.getGoodsId());
             String str = I.SERVER_ROOT + I.REQUEST_DOWNLOAD_IMAGE;
             ImageLoader.build(str)
