@@ -40,8 +40,6 @@ public class CategoryFragment extends Fragment {
     ArrayList<ArrayList<CategoryChildBean>> childList = new ArrayList<>();
     ExpandableListView elv;
     MyExpandableAdapter myExpandableAdapter;
-    int pagid = 1;
-    int pagsize = 20;
 
     public CategoryFragment() {
     }
@@ -61,7 +59,9 @@ public class CategoryFragment extends Fragment {
         elv.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
             @Override
             public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
-                initChildeData(groupList.get(groupPosition), groupPosition);
+                if (childList.get(groupPosition)==null){
+                    initChildeData(groupList.get(groupPosition), groupPosition);
+                }
                 return false;
             }
         });
@@ -132,8 +132,6 @@ public class CategoryFragment extends Fragment {
         final OkHttpUtils<CategoryChildBean[]> chileutils = new OkHttpUtils<>(getActivity());
         chileutils.url(I.SERVER_ROOT + I.REQUEST_FIND_CATEGORY_CHILDREN)
                 .addParam(I.CategoryChild.PARENT_ID, cb.getId() + "")
-                .addParam(I.PAGE_ID, pagid + "")
-                .addParam(I.PAGE_SIZE, pagsize + "")
                 .targetClass(CategoryChildBean[].class)
                 .execute(new OkHttpUtils.OnCompleteListener<CategoryChildBean[]>() {
                     @Override

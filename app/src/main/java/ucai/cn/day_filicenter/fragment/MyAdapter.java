@@ -2,7 +2,6 @@ package ucai.cn.day_filicenter.fragment;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -14,7 +13,6 @@ import ucai.cn.day_filicenter.I;
 import ucai.cn.day_filicenter.R;
 import ucai.cn.day_filicenter.bean.NewGoodBean;
 import ucai.cn.day_filicenter.utils.ImageLoader;
-import ucai.cn.day_filicenter.utils.L;
 
 /**
  * Created by Administrator on 2016/10/19.
