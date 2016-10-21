@@ -36,7 +36,6 @@ public class CartFragment extends Fragment {
     MyCartAdapter myAdapter;
     RecyclerView rv;
     LinearLayoutManager linearLayoutManager;
-    MyReceiver myReceiver;
 
     public CartFragment() {
         // Required empty public constructor
@@ -48,19 +47,9 @@ public class CartFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_cart, container, false);
-        initReceiver();
         initView();
         initData();
         return view;
-    }
-
-    private void initReceiver() {
-        if (myReceiver == null) {
-            myReceiver = new MyReceiver();
-        }
-        IntentFilter filter = new IntentFilter();
-        filter.addAction("ucai.cn.day_filicenter.fragment.MyReceiver");
-        getActivity().registerReceiver(myReceiver, filter);
     }
 
     private void initData() {
@@ -138,13 +127,4 @@ public class CartFragment extends Fragment {
         }
     }
 
-
-    class MyReceiver extends BroadcastReceiver {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            GoodsDetailsBean goodsDetail = (GoodsDetailsBean) intent.getSerializableExtra("goodsDetail");
-            myList.add(goodsDetail);
-            myAdapter.addList(myList);
-        }
-    }
 }

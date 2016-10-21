@@ -1,5 +1,6 @@
 package ucai.cn.day_filicenter.activity;
 
+import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -33,19 +34,23 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     ArrayList<Fragment> fragmentList = new ArrayList<>();
     ArrayList<RadioButton> radioList = new ArrayList<>();
     ViewPager viewPager;
+    int a = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+        Intent intent = getIntent();
+        a = intent.getIntExtra("Focus", 0);
         initView();
         setListener();
         initFragment();
+        setFragmet();
     }
 
-    private void setFragment() {
-        viewPager.setCurrentItem(4);
-        choose(4);
+    private void setFragmet() {
+        choose(a);
+        viewPager.setCurrentItem(a);
     }
 
     @Override

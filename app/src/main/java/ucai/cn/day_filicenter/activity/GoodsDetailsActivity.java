@@ -152,10 +152,8 @@ public class GoodsDetailsActivity extends AppCompatActivity{
         goodscart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent();
-                intent.setAction("ucai.cn.day_filicenter.fragment.MyReceiver");
-                intent.putExtra("goodsDetail",goodsDetailsBean);
-                sendBroadcast(intent);
+
+
             }
         });
     }
