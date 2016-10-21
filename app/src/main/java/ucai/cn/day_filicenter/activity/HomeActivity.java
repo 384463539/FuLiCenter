@@ -15,17 +15,20 @@ import android.widget.RadioButton;
 
 import java.util.ArrayList;
 
+import ucai.cn.day_filicenter.FuLiCenterApplication;
 import ucai.cn.day_filicenter.R;
 import ucai.cn.day_filicenter.fragment.BoutiqueFragment;
 import ucai.cn.day_filicenter.fragment.CartFragment;
 import ucai.cn.day_filicenter.fragment.CategoryFragment;
 import ucai.cn.day_filicenter.fragment.NewgoodFragment;
+import ucai.cn.day_filicenter.fragment.PersonFragment;
 
 public class HomeActivity extends AppCompatActivity implements View.OnClickListener {
     RadioButton rb_newgood, rb_boutique, rb_category, rb_car, rb_personal;
     NewgoodFragment newgoodFragment;
     BoutiqueFragment boutiqueFragment;
     CategoryFragment categoryFragment;
+    PersonFragment personFragment;
     CartFragment cartFragment;
     ArrayList<Fragment> fragmentList = new ArrayList<>();
     ArrayList<RadioButton> radioList = new ArrayList<>();
@@ -35,10 +38,19 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-
         initView();
         setListener();
         initFragment();
+    }
+
+    private void setFragment() {
+        viewPager.setCurrentItem(4);
+        choose(4);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
     }
 
     private void initFragment() {
@@ -48,8 +60,10 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         fragmentList.add(boutiqueFragment);
         categoryFragment = new CategoryFragment();
         fragmentList.add(categoryFragment);
-        cartFragment  = new CartFragment();
+        cartFragment = new CartFragment();
         fragmentList.add(cartFragment);
+        personFragment = new PersonFragment();
+        fragmentList.add(personFragment);
         viewPager.setAdapter(new MyAdapter(getSupportFragmentManager()));
     }
 
@@ -64,10 +78,15 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
             }
+
             @Override
             public void onPageSelected(int position) {
+                if (!isLogin()) {
+                    return;
+                }
                 choose(position);
             }
+
             @Override
             public void onPageScrollStateChanged(int state) {
             }
@@ -101,12 +120,18 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                 viewPager.setCurrentItem(1);
                 break;
             case R.id.rb_category:
+                viewPager.setCurrentItem(2);
                 choose(2);
                 break;
             case R.id.rb_car:
+                viewPager.setCurrentItem(3);
                 choose(3);
                 break;
             case R.id.rb_personal:
+                if (!isLogin()) {
+                    return;
+                }
+                viewPager.setCurrentItem(4);
                 choose(4);
                 break;
         }
@@ -137,5 +162,9 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         public int getCount() {
             return fragmentList.size();
         }
+    }
+
+    public boolean isLogin() {
+        return true;
     }
 }

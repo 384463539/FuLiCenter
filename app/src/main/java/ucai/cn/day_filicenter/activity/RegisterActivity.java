@@ -13,6 +13,7 @@ import android.widget.Toast;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import ucai.cn.day_filicenter.FuLiCenterApplication;
 import ucai.cn.day_filicenter.I;
 import ucai.cn.day_filicenter.R;
 import ucai.cn.day_filicenter.bean.Result;
@@ -45,10 +46,10 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private void initData() {
-        name = registerName.getText().toString();
-        nick = registerNick.getText().toString();
-        password = registerPassword.getText().toString();
-        okpassword = registerOkparssword.getText().toString();
+        name = registerName.getText().toString().trim();
+        nick = registerNick.getText().toString().trim();
+        password = registerPassword.getText().toString().trim();
+        okpassword = registerOkparssword.getText().toString().trim();
     }
 
     @OnClick({R.id.register_ok, R.id.register_iv_back})
@@ -111,12 +112,6 @@ public class RegisterActivity extends AppCompatActivity {
                             case I.MSG_REGISTER_FAIL:
                                 Toast.makeText(RegisterActivity.this, "注册失败", Toast.LENGTH_SHORT).show();
                                 break;
-//                                case I.MSG_REGISTER_UPLOAD_AVATAR_FAIL:
-//                                    Toast.makeText(RegisterActivity.this, "上传头像失败", Toast.LENGTH_SHORT).show();
-//                                    break;
-//                                case I.MSG_REGISTER_UPLOAD_AVATAR_SUCCESS:
-//                                    Toast.makeText(RegisterActivity.this, "上传头像成功", Toast.LENGTH_SHORT).show();
-//                                    break;
                         }
                     }
 

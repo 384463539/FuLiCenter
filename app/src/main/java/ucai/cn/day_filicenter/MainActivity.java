@@ -1,6 +1,7 @@
 package ucai.cn.day_filicenter;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -30,20 +31,32 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+        initData();
     }
 
-    public void btniv(View view) {
-        startActivity(new Intent(MainActivity.this, HomeActivity.class));
+    private void initData() {
+        SharedPreferences sharedPreferences = getSharedPreferences("loginname", MODE_PRIVATE);
+        mainAvName.setText(sharedPreferences.getString("name", ""));
     }
 
     @OnClick({R.id.main_btn_login, R.id.main_tv_z})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.main_btn_login:
+                SharedPreferences sharedPreferences = getSharedPreferences("loginname", MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                String name = mainAvName.getText().toString().trim();
+                if (name.length() > 0) {
+                    editor.putString("name", name);
+                    editor.commit();
+                }
+                startActivity(new Intent(MainActivity.this, HomeActivity.class));
+                overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
                 break;
             case R.id.main_tv_z:
                 Intent intent = new Intent(MainActivity.this, RegisterActivity.class);
                 startActivityForResult(intent, 1);
+                overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
                 break;
         }
     }

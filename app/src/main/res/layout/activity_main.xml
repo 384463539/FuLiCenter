@@ -18,9 +18,9 @@
         android:orientation="horizontal">
 
         <ImageView
+            android:id="@+id/main_av_back"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:onClick="btniv"
             android:src="@drawable/back" />
 
         <TextView
