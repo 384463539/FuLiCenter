@@ -1,9 +1,11 @@
 package ucai.cn.day_filicenter.bean;
 
+import java.io.Serializable;
+
 /**
  * Created by Administrator on 2016/10/13.
  */
-public class PropertiesBean {
+public class PropertiesBean implements Serializable{
 
     /**
      * id : 9529

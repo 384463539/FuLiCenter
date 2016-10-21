@@ -1,13 +1,16 @@
 package ucai.cn.day_filicenter.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.os.SystemClock;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -20,15 +23,17 @@ import ucai.cn.day_filicenter.bean.AlbumsBean;
 import ucai.cn.day_filicenter.bean.GoodsDetailsBean;
 import ucai.cn.day_filicenter.bean.PropertiesBean;
 import ucai.cn.day_filicenter.utils.ImageLoader;
+import ucai.cn.day_filicenter.utils.L;
 import ucai.cn.day_filicenter.utils.MFGT;
 import ucai.cn.day_filicenter.utils.OkHttpUtils;
 import ucai.cn.day_filicenter.views.FlowIndicator;
 
-public class GoodsDetailsActivity extends AppCompatActivity {
+public class GoodsDetailsActivity extends AppCompatActivity{
     TextView details_tv_wname, details_tv_price, details_tv_cname, details_tv_brief;
     ImageView iv;
     FlowIndicator indicator;
     GestureDetector mgestureDetector;
+    GoodsDetailsBean goodsDetailsBean;
     AlbumsBean[] aArr;
     Handler mainhandler;
     MyGesture myGesture;
@@ -36,8 +41,11 @@ public class GoodsDetailsActivity extends AppCompatActivity {
     Handler workhandler;
     boolean stop = false;
     int a = 0;
+    ImageView goodscart;
+
     @Bind(R.id.goods_iv_back)
     ImageView goodsIvBack;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,12 +54,6 @@ public class GoodsDetailsActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         initView();
         initData();
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-
     }
 
     private void setThread() {
@@ -103,6 +105,7 @@ public class GoodsDetailsActivity extends AppCompatActivity {
                 .execute(new OkHttpUtils.OnCompleteListener<GoodsDetailsBean>() {
                     @Override
                     public void onSuccess(GoodsDetailsBean result) {
+                        goodsDetailsBean = result;
                         details_tv_cname.setText(result.getGoodsName());
                         details_tv_wname.setText(result.getGoodsEnglishName());
                         details_tv_price.setText(result.getCurrencyPrice());
@@ -143,6 +146,16 @@ public class GoodsDetailsActivity extends AppCompatActivity {
             public boolean handleMessage(Message msg) {
                 myGesture.setView(msg.arg1);
                 return false;
+            }
+        });
+        goodscart = (ImageView) findViewById(R.id.goodsdetail_addcart);
+        goodscart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent();
+                intent.setAction("ucai.cn.day_filicenter.fragment.MyReceiver");
+                intent.putExtra("goodsDetail",goodsDetailsBean);
+                sendBroadcast(intent);
             }
         });
     }

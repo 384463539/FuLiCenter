@@ -49,15 +49,16 @@
         android:orientation="horizontal">
 
         <EditText
+            android:id="@+id/main_av_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:hint="用户名" />
 
-        <!--<ImageView-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:src="" />-->
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/icon_account" />
     </LinearLayout>
 
     <LinearLayout
@@ -69,19 +70,21 @@
         android:orientation="horizontal">
 
         <EditText
+            android:id="@+id/main_av_password"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:hint="用户名" />
+            android:hint="密码"
+            android:password="true" />
 
-        <!--<ImageView-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:src="" />-->
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/icon_pwd" />
     </LinearLayout>
 
     <Button
-        android:id="@+id/home_btn_login"
+        android:id="@+id/main_btn_login"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:layout_below="@id/password_layout"
@@ -92,9 +95,10 @@
         android:textSize="25sp" />
 
     <TextView
+        android:id="@+id/main_tv_z"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/home_btn_login"
+        android:layout_below="@id/main_btn_login"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="10dp"
         android:background="#a0de612c"
