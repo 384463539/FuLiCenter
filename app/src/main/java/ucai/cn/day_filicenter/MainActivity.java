@@ -25,6 +25,7 @@ import ucai.cn.day_filicenter.fragment.PersonFragment;
 import ucai.cn.day_filicenter.utils.L;
 import ucai.cn.day_filicenter.utils.MD5;
 import ucai.cn.day_filicenter.utils.OkHttpUtils;
+import ucai.cn.day_filicenter.utils.SharedPreferencesUtils;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -48,21 +49,17 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initData() {
-        SharedPreferences sharedPreferences = getSharedPreferences("loginname", MODE_PRIVATE);
-        mainAvName.setText(sharedPreferences.getString("name", ""));
+        mainAvName.setText(SharedPreferencesUtils.getInstance(this).getName());
     }
 
     @OnClick({R.id.main_btn_login, R.id.main_tv_z})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.main_btn_login:
-                SharedPreferences sharedPreferences = getSharedPreferences("loginname", MODE_PRIVATE);
-                SharedPreferences.Editor editor = sharedPreferences.edit();
                 name = mainAvName.getText().toString().trim();
                 password = mainAvPassword.getText().toString().trim();
                 if (name.length() > 0) {
-                    editor.putString("name", name);
-                    editor.commit();
+                    SharedPreferencesUtils.getInstance(this).setName(name);
                 }
                 if (TextUtils.isEmpty(name)) {
                     Toast.makeText(MainActivity.this, "请输入账号", Toast.LENGTH_SHORT).show();
@@ -99,16 +96,14 @@ public class MainActivity extends AppCompatActivity {
                             Toast.makeText(MainActivity.this, "未取得数据", Toast.LENGTH_SHORT).show();
                             return;
                         } else if (result.getRetCode() == 0) {
+                            FuLiCenterApplication.setUser(userAvatar);
                             UserDao userDao = new UserDao(MainActivity.this);
-                            boolean b = userDao.savaUser(userAvatar);
-                            if (!b) {
-                                Toast.makeText(MainActivity.this, "数据库异常", Toast.LENGTH_SHORT).show();
-                            }
+                            userDao.savaUser(userAvatar);
                             Toast.makeText(MainActivity.this, "登录成功", Toast.LENGTH_SHORT).show();
-                            Intent intent = new Intent(MainActivity.this, HomeActivity.class);
-                            intent.putExtra("userAvatar", userAvatar);
-                            intent.putExtra("Focus", 4);
-                            startActivity(intent);
+                            Intent intent = new Intent();
+                            setResult(10, intent);
+                            overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
+                            finish();
                         } else {
                             Toast.makeText(MainActivity.this, "登录失败", Toast.LENGTH_SHORT).show();
                         }
@@ -119,8 +114,6 @@ public class MainActivity extends AppCompatActivity {
                         Toast.makeText(MainActivity.this, "服务器未响应", Toast.LENGTH_SHORT).show();
                     }
                 });
-//        startActivity(new Intent(MainActivity.this, HomeActivity.class));
-//        overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
     }
 
     @Override

@@ -3,6 +3,7 @@ package ucai.cn.day_filicenter;
 import android.app.Application;
 
 import ucai.cn.day_filicenter.bean.UserAvatar;
+import ucai.cn.day_filicenter.utils.L;
 
 
 /**
@@ -29,6 +30,7 @@ public class FuLiCenterApplication extends Application {
 
     public static void setUser(UserAvatar user) {
         userAvatar = user;
+        L.i("lication"+ user);
     }
 
     public static UserAvatar getUser() {

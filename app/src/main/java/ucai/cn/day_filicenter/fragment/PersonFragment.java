@@ -14,6 +14,7 @@ import android.widget.TextView;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import ucai.cn.day_filicenter.FuLiCenterApplication;
 import ucai.cn.day_filicenter.R;
 import ucai.cn.day_filicenter.bean.UserAvatar;
 
@@ -43,15 +44,15 @@ public class PersonFragment extends Fragment {
     @Bind(R.id.person_fragment_layout_buy)
     RelativeLayout personFragmentLayoutBuy;
     @Bind(R.id.person_fragment_tv_pay)
-    TextView personFragmentTvPay;
+    ImageView personFragmentTvPay;
     @Bind(R.id.person_fragment_tv_hair)
-    TextView personFragmentTvHair;
+    ImageView personFragmentTvHair;
     @Bind(R.id.person_fragment_tv_get)
-    TextView personFragmentTvGet;
+    ImageView personFragmentTvGet;
     @Bind(R.id.person_fragment_tv_evaluation)
-    TextView personFragmentTvEvaluation;
+    ImageView personFragmentTvEvaluation;
     @Bind(R.id.person_fragment_tv_after)
-    TextView personFragmentTvAfter;
+    ImageView personFragmentTvAfter;
     @Bind(R.id.person_fragment_layout_card)
     RelativeLayout personFragmentLayoutCard;
     @Bind(R.id.person_fragment_layout_life)
@@ -87,6 +88,7 @@ public class PersonFragment extends Fragment {
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.person_fragment_iv_sz:
+                FuLiCenterApplication.setUser(null);
                 break;
             case R.id.person_fragment_tv_sz:
                 break;

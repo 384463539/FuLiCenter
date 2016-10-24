@@ -24,6 +24,7 @@ import ucai.cn.day_filicenter.fragment.CartFragment;
 import ucai.cn.day_filicenter.fragment.CategoryFragment;
 import ucai.cn.day_filicenter.fragment.NewgoodFragment;
 import ucai.cn.day_filicenter.fragment.PersonFragment;
+import ucai.cn.day_filicenter.utils.L;
 
 public class HomeActivity extends AppCompatActivity implements View.OnClickListener {
     RadioButton rb_newgood, rb_boutique, rb_category, rb_car, rb_personal;
@@ -35,23 +36,14 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     ArrayList<Fragment> fragmentList = new ArrayList<>();
     ArrayList<RadioButton> radioList = new ArrayList<>();
     ViewPager viewPager;
-    int a = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-        Intent intent = getIntent();
-        a = intent.getIntExtra("Focus", 0);
         initView();
         setListener();
         initFragment();
-        setFragmet();
-    }
-
-    private void setFragmet() {
-        choose(a);
-        viewPager.setCurrentItem(a);
     }
 
     @Override
@@ -89,7 +81,8 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
             public void onPageSelected(int position) {
                 if (position == 4) {
                     if (!isLogin()) {
-                        startActivity(new Intent(HomeActivity.this, MainActivity.class));
+                        startActivityForResult(new Intent(HomeActivity.this, MainActivity.class), 11);
+                        overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
                         return;
                     }
                 }
@@ -138,11 +131,14 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.rb_personal:
                 if (!isLogin()) {
-                    startActivity(new Intent(HomeActivity.this, MainActivity.class));
+                    startActivityForResult(new Intent(HomeActivity.this, MainActivity.class), 11);
+                    overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
+                    rb_personal.setChecked(false);
                     return;
+                } else {
+                    viewPager.setCurrentItem(4);
+                    choose(4);
                 }
-                viewPager.setCurrentItem(4);
-                choose(4);
                 break;
         }
     }
@@ -175,6 +171,26 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     public boolean isLogin() {
-        return FuLiCenterApplication.getUser() != null;
+        if (FuLiCenterApplication.getUser() == null) {
+            return false;
+        }
+        return FuLiCenterApplication.getUser().getMuserName() != null;
+    }
+
+    private void setFragmet(int a) {
+        choose(a);
+        viewPager.setCurrentItem(a);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case 11:
+                if (resultCode == 10) {
+                    setFragmet(4);
+                }
+                break;
+        }
     }
 }

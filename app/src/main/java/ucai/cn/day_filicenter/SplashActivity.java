@@ -12,6 +12,7 @@ import ucai.cn.day_filicenter.bean.UserAvatar;
 import ucai.cn.day_filicenter.dao.UserDao;
 import ucai.cn.day_filicenter.utils.L;
 import ucai.cn.day_filicenter.utils.MFGT;
+import ucai.cn.day_filicenter.utils.SharedPreferencesUtils;
 
 public class SplashActivity extends AppCompatActivity {
     long a = 2000;
@@ -39,11 +40,15 @@ public class SplashActivity extends AppCompatActivity {
                     }
                 }
                 UserAvatar user = FuLiCenterApplication.getUser();
-                if (user == null) {
+                String username = SharedPreferencesUtils.getInstance(SplashActivity.this).getName();
+                if (user == null && username != null) {
                     UserDao userDao = new UserDao(SplashActivity.this);
-                    SharedPreferences sharedPreferences = getSharedPreferences("loginname", MODE_PRIVATE);
-                    user = userDao.getUser(sharedPreferences.getString("name", ""));
+                    user = userDao.getUser(username);
                     L.i("数据库" + user.toString());
+                    if (user != null) {
+                        L.i("sss" + user.toString());
+                        FuLiCenterApplication.setUser(user);
+                    }
                 }
                 MFGT.startActivity(SplashActivity.this, HomeActivity.class);
             }
