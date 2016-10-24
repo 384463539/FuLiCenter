@@ -10,6 +10,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewPropertyAnimator;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -82,7 +83,7 @@ public class BoutiqueFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 BoutiqueBean bbean = (BoutiqueBean) v.getTag();
-                MFGT.startActivityB(getActivity(), BoutiqueActivity.class, bbean.getId(), bbean.getName(),null);
+                MFGT.startActivityB(getActivity(), BoutiqueActivity.class, bbean.getId(), bbean.getName(), null);
             }
         };
     }

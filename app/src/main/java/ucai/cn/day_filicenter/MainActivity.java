@@ -20,8 +20,10 @@ import ucai.cn.day_filicenter.activity.HomeActivity;
 import ucai.cn.day_filicenter.activity.RegisterActivity;
 import ucai.cn.day_filicenter.bean.Result;
 import ucai.cn.day_filicenter.bean.UserAvatar;
+import ucai.cn.day_filicenter.dao.UserDao;
 import ucai.cn.day_filicenter.fragment.PersonFragment;
 import ucai.cn.day_filicenter.utils.L;
+import ucai.cn.day_filicenter.utils.MD5;
 import ucai.cn.day_filicenter.utils.OkHttpUtils;
 
 public class MainActivity extends AppCompatActivity {
@@ -85,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
         OkHttpUtils<Result> utils = new OkHttpUtils<>(this);
         utils.setRequestUrl(I.REQUEST_LOGIN)
                 .addParam(I.User.USER_NAME, name)
-                .addParam(I.User.PASSWORD, password)
+                .addParam(I.User.PASSWORD, MD5.getMessageDigest(password))
                 .targetClass(Result.class)
                 .execute(new OkHttpUtils.OnCompleteListener<Result>() {
                     @Override
@@ -97,6 +99,11 @@ public class MainActivity extends AppCompatActivity {
                             Toast.makeText(MainActivity.this, "未取得数据", Toast.LENGTH_SHORT).show();
                             return;
                         } else if (result.getRetCode() == 0) {
+                            UserDao userDao = new UserDao(MainActivity.this);
+                            boolean b = userDao.savaUser(userAvatar);
+                            if (!b) {
+                                Toast.makeText(MainActivity.this, "数据库异常", Toast.LENGTH_SHORT).show();
+                            }
                             Toast.makeText(MainActivity.this, "登录成功", Toast.LENGTH_SHORT).show();
                             Intent intent = new Intent(MainActivity.this, HomeActivity.class);
                             intent.putExtra("userAvatar", userAvatar);

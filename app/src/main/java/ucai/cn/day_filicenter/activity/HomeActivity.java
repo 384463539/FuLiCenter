@@ -17,6 +17,7 @@ import android.widget.RadioButton;
 import java.util.ArrayList;
 
 import ucai.cn.day_filicenter.FuLiCenterApplication;
+import ucai.cn.day_filicenter.MainActivity;
 import ucai.cn.day_filicenter.R;
 import ucai.cn.day_filicenter.fragment.BoutiqueFragment;
 import ucai.cn.day_filicenter.fragment.CartFragment;
@@ -86,8 +87,11 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
             @Override
             public void onPageSelected(int position) {
-                if (!isLogin()) {
-                    return;
+                if (position == 4) {
+                    if (!isLogin()) {
+                        startActivity(new Intent(HomeActivity.this, MainActivity.class));
+                        return;
+                    }
                 }
                 choose(position);
             }
@@ -134,6 +138,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.rb_personal:
                 if (!isLogin()) {
+                    startActivity(new Intent(HomeActivity.this, MainActivity.class));
                     return;
                 }
                 viewPager.setCurrentItem(4);
@@ -170,6 +175,6 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     public boolean isLogin() {
-        return true;
+        return FuLiCenterApplication.getUser() != null;
     }
 }

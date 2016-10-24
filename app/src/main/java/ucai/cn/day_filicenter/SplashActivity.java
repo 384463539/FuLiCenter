@@ -1,11 +1,16 @@
 package ucai.cn.day_filicenter;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.SystemClock;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 
+import ucai.cn.day_filicenter.activity.HomeActivity;
+import ucai.cn.day_filicenter.bean.UserAvatar;
+import ucai.cn.day_filicenter.dao.UserDao;
+import ucai.cn.day_filicenter.utils.L;
 import ucai.cn.day_filicenter.utils.MFGT;
 
 public class SplashActivity extends AppCompatActivity {
@@ -33,7 +38,14 @@ public class SplashActivity extends AppCompatActivity {
                         e.printStackTrace();
                     }
                 }
-                MFGT.startActivity(SplashActivity.this, MainActivity.class);
+                UserAvatar user = FuLiCenterApplication.getUser();
+                if (user == null) {
+                    UserDao userDao = new UserDao(SplashActivity.this);
+                    SharedPreferences sharedPreferences = getSharedPreferences("loginname", MODE_PRIVATE);
+                    user = userDao.getUser(sharedPreferences.getString("name", ""));
+                    L.i("数据库" + user.toString());
+                }
+                MFGT.startActivity(SplashActivity.this, HomeActivity.class);
             }
         }).start();
     }

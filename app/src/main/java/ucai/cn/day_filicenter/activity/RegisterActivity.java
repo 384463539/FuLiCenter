@@ -18,6 +18,7 @@ import ucai.cn.day_filicenter.I;
 import ucai.cn.day_filicenter.R;
 import ucai.cn.day_filicenter.bean.Result;
 import ucai.cn.day_filicenter.utils.L;
+import ucai.cn.day_filicenter.utils.MD5;
 import ucai.cn.day_filicenter.utils.MFGT;
 import ucai.cn.day_filicenter.utils.OkHttpUtils;
 
@@ -90,7 +91,7 @@ public class RegisterActivity extends AppCompatActivity {
         utils.setRequestUrl(I.REQUEST_REGISTER).post()
                 .addParam(I.User.USER_NAME, name)
                 .addParam(I.User.NICK, nick)
-                .addParam(I.User.PASSWORD, password)
+                .addParam(I.User.PASSWORD, MD5.getMessageDigest(password))
                 .targetClass(Result.class)
                 .execute(new OkHttpUtils.OnCompleteListener<Result>() {
                     @Override
