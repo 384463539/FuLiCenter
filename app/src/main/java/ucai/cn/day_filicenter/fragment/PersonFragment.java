@@ -15,8 +15,10 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import ucai.cn.day_filicenter.FuLiCenterApplication;
+import ucai.cn.day_filicenter.I;
 import ucai.cn.day_filicenter.R;
 import ucai.cn.day_filicenter.bean.UserAvatar;
+import ucai.cn.day_filicenter.utils.ImageLoader;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -63,7 +65,6 @@ public class PersonFragment extends Fragment {
     RelativeLayout personFragmentLayoutVip;
 
     public PersonFragment() {
-        // Required empty public constructor
     }
 
 
@@ -74,7 +75,23 @@ public class PersonFragment extends Fragment {
         Intent intent = getActivity().getIntent();
         userAvatar = (UserAvatar) intent.getSerializableExtra("userAvatar");
         ButterKnife.bind(this, view);
+        initData();
         return view;
+    }
+
+    private void initData() {
+        UserAvatar user = FuLiCenterApplication.getUser();
+        personFragmentTvNick.setText(user.getMuserNick());
+        String url = I.SERVER_ROOT + I.REQUEST_DOWNLOAD_AVATAR;
+        ImageLoader.build(url)
+                .addParam(I.NAME_OR_HXID, user.getMuserName())
+                .addParam(I.AVATAR_TYPE, user.getMavatarPath())
+                .addParam(I.AVATAR_SUFFIY, user.getMavatarSuffix())
+                .addParam(I.AVATAR_WIETH, 200 + "")
+                .addParam(I.AVATAR_HEIGHT, 200 + "")
+                .imageView(personFragmentIvUser)
+                .defaultPicture(R.drawable.icon_account)
+                .showImage(getActivity());
     }
 
 
