@@ -1,9 +1,14 @@
 package ucai.cn.day_filicenter.activity;
 
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -15,8 +20,13 @@ import butterknife.OnClick;
 import ucai.cn.day_filicenter.FuLiCenterApplication;
 import ucai.cn.day_filicenter.I;
 import ucai.cn.day_filicenter.R;
+import ucai.cn.day_filicenter.bean.Result;
 import ucai.cn.day_filicenter.bean.UserAvatar;
+import ucai.cn.day_filicenter.dao.UserDao;
 import ucai.cn.day_filicenter.utils.ImageLoader;
+import ucai.cn.day_filicenter.utils.L;
+import ucai.cn.day_filicenter.utils.OkHttpUtils;
+import ucai.cn.day_filicenter.utils.SharedPreferencesUtils;
 
 public class UserActivity extends AppCompatActivity {
 
@@ -42,27 +52,33 @@ public class UserActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user);
         ButterKnife.bind(this);
-        initData();
+    }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        initData();
     }
 
     private void initData() {
         UserAvatar user = FuLiCenterApplication.getUser();
-        userTvNick.setText(user.getMuserNick());
-        String url = I.SERVER_ROOT + I.REQUEST_DOWNLOAD_AVATAR;
-        ImageLoader.build(url)
-                .addParam(I.NAME_OR_HXID, user.getMuserName())
-                .addParam(I.AVATAR_TYPE, user.getMavatarPath())
-                .addParam(I.AVATAR_SUFFIY, user.getMavatarSuffix())
-                .addParam(I.AVATAR_WIETH, 200 + "")
-                .addParam(I.AVATAR_HEIGHT, 200 + "")
-                .imageView(userIvUser)
-                .defaultPicture(R.drawable.icon_account)
-                .showImage(this);
+        if (user != null && user.getMuserName() != null) {
+            userTvNick.setText(user.getMuserNick());
+            String url = I.SERVER_ROOT + I.REQUEST_DOWNLOAD_AVATAR;
+            ImageLoader.build(url)
+                    .addParam(I.NAME_OR_HXID, user.getMuserName())
+                    .addParam(I.AVATAR_TYPE, user.getMavatarPath())
+                    .addParam(I.AVATAR_SUFFIY, user.getMavatarSuffix())
+                    .addParam(I.AVATAR_WIETH, 200 + "")
+                    .addParam(I.AVATAR_HEIGHT, 200 + "")
+                    .imageView(userIvUser)
+                    .defaultPicture(R.drawable.icon_account)
+                    .showImage(this);
+        }
     }
 
     @OnClick({R.id.user_av_back, R.id.user_layout2_user, R.id.user_layout3_nick, R.id.user_layout4_ew, R.id.user_bt_nologin})
-    public void onClick(View view) {
+    public void onClick(final View view) {
         switch (view.getId()) {
             case R.id.user_av_back:
                 finish();
@@ -70,12 +86,53 @@ public class UserActivity extends AppCompatActivity {
             case R.id.user_layout2_user:
                 break;
             case R.id.user_layout3_nick:
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                final View view1 = View.inflate(this, R.layout.nick_dialog, null);
+                builder.setTitle("设置昵称")
+                        .setView(view1)
+                        .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                EditText ed = (EditText) view1.findViewById(R.id.nick_dialog);
+                                String nick = ed.getText().toString();
+                                UserDao userDao = new UserDao(UserActivity.this);
+                                final UserAvatar user = FuLiCenterApplication.getUser();
+                                user.setMuserNick(nick);
+                                userDao.updataUser(user);
+                                OkHttpUtils<Result> utils = new OkHttpUtils<Result>(UserActivity.this);
+                                utils.url(I.SERVER_ROOT + I.REQUEST_UPDATE_USER_NICK)
+                                        .addParam(I.User.NICK, nick)
+                                        .addParam(I.User.USER_NAME, user.getMuserName())
+                                        .targetClass(Result.class)
+                                        .execute(new OkHttpUtils.OnCompleteListener<Result>() {
+                                            @Override
+                                            public void onSuccess(Result result) {
+                                                L.i(result.toString());
+                                            }
+
+                                            @Override
+                                            public void onError(String error) {
+
+                                            }
+                                        });
+                            }
+                        });
+                builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                }).create().show();
                 break;
             case R.id.user_layout4_ew:
 
                 break;
             case R.id.user_bt_nologin:
+                SharedPreferencesUtils.getInstance(this).delectName();
                 FuLiCenterApplication.setUser(null);
+                overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
+                startActivity(new Intent(this, HomeActivity.class));
+                finish();
                 break;
         }
     }

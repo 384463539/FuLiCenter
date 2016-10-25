@@ -34,4 +34,9 @@ public class SharedPreferencesUtils {
     public String getName() {
         return sharedPreferences.getString(KEY, "");
     }
+
+    public void delectName() {
+        editor.clear();
+        editor.commit();
+    }
 }

@@ -16,7 +16,9 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import ucai.cn.day_filicenter.FuLiCenterApplication;
 import ucai.cn.day_filicenter.I;
+import ucai.cn.day_filicenter.MainActivity;
 import ucai.cn.day_filicenter.R;
+import ucai.cn.day_filicenter.activity.UserActivity;
 import ucai.cn.day_filicenter.bean.UserAvatar;
 import ucai.cn.day_filicenter.utils.ImageLoader;
 
@@ -75,23 +77,30 @@ public class PersonFragment extends Fragment {
         Intent intent = getActivity().getIntent();
         userAvatar = (UserAvatar) intent.getSerializableExtra("userAvatar");
         ButterKnife.bind(this, view);
-        initData();
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        initData();
     }
 
     private void initData() {
         UserAvatar user = FuLiCenterApplication.getUser();
-        personFragmentTvNick.setText(user.getMuserNick());
-        String url = I.SERVER_ROOT + I.REQUEST_DOWNLOAD_AVATAR;
-        ImageLoader.build(url)
-                .addParam(I.NAME_OR_HXID, user.getMuserName())
-                .addParam(I.AVATAR_TYPE, user.getMavatarPath())
-                .addParam(I.AVATAR_SUFFIY, user.getMavatarSuffix())
-                .addParam(I.AVATAR_WIETH, 200 + "")
-                .addParam(I.AVATAR_HEIGHT, 200 + "")
-                .imageView(personFragmentIvUser)
-                .defaultPicture(R.drawable.icon_account)
-                .showImage(getActivity());
+        if (user != null && user.getMuserName() != null) {
+            personFragmentTvNick.setText(user.getMuserNick());
+            String url = I.SERVER_ROOT + I.REQUEST_DOWNLOAD_AVATAR;
+            ImageLoader.build(url)
+                    .addParam(I.NAME_OR_HXID, user.getMuserName())
+                    .addParam(I.AVATAR_TYPE, user.getMavatarPath())
+                    .addParam(I.AVATAR_SUFFIY, user.getMavatarSuffix())
+                    .addParam(I.AVATAR_WIETH, 200 + "")
+                    .addParam(I.AVATAR_HEIGHT, 200 + "")
+                    .imageView(personFragmentIvUser)
+                    .defaultPicture(R.drawable.icon_account)
+                    .showImage(getActivity());
+        }
     }
 
 
@@ -105,7 +114,8 @@ public class PersonFragment extends Fragment {
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.person_fragment_iv_sz:
-                FuLiCenterApplication.setUser(null);
+                startActivity(new Intent(getActivity(), UserActivity.class));
+                getActivity().overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
                 break;
             case R.id.person_fragment_tv_sz:
                 break;

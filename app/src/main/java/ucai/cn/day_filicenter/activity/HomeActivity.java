@@ -47,9 +47,13 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
+    public void onResume() {
+        super.onResume();
+        if (!isLogin()) {
+
+        }
     }
+
 
     private void initFragment() {
         newgoodFragment = new NewgoodFragment();
