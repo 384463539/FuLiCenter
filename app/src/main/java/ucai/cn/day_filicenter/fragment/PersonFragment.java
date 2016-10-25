@@ -19,8 +19,11 @@ import ucai.cn.day_filicenter.I;
 import ucai.cn.day_filicenter.MainActivity;
 import ucai.cn.day_filicenter.R;
 import ucai.cn.day_filicenter.activity.UserActivity;
+import ucai.cn.day_filicenter.bean.MessageBean;
 import ucai.cn.day_filicenter.bean.UserAvatar;
 import ucai.cn.day_filicenter.utils.ImageLoader;
+import ucai.cn.day_filicenter.utils.L;
+import ucai.cn.day_filicenter.utils.OkHttpUtils;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -28,7 +31,6 @@ import ucai.cn.day_filicenter.utils.ImageLoader;
 public class PersonFragment extends Fragment {
 
     View view;
-    UserAvatar userAvatar;
     @Bind(R.id.person_fragment_iv_sz)
     ImageView personFragmentIvSz;
     @Bind(R.id.person_fragment_tv_sz)
@@ -74,8 +76,6 @@ public class PersonFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_person, container, false);
-        Intent intent = getActivity().getIntent();
-        userAvatar = (UserAvatar) intent.getSerializableExtra("userAvatar");
         ButterKnife.bind(this, view);
         return view;
     }
@@ -87,6 +87,7 @@ public class PersonFragment extends Fragment {
     }
 
     private void initData() {
+        L.i("个人中心数据刷新");
         UserAvatar user = FuLiCenterApplication.getUser();
         if (user != null && user.getMuserName() != null) {
             personFragmentTvNick.setText(user.getMuserNick());
@@ -100,6 +101,19 @@ public class PersonFragment extends Fragment {
                     .imageView(personFragmentIvUser)
                     .defaultPicture(R.drawable.icon_account)
                     .showImage(getActivity());
+            OkHttpUtils<MessageBean> utils = new OkHttpUtils<>(getActivity());
+            utils.url(I.SERVER_ROOT + I.REQUEST_FIND_COLLECT_COUNT)
+                    .addParam(I.Cart.USER_NAME, user.getMuserName())
+                    .targetClass(MessageBean.class)
+                    .execute(new OkHttpUtils.OnCompleteListener<MessageBean>() {
+                        @Override
+                        public void onSuccess(MessageBean result) {
+                            personFragmentTvNum1.setText(result.getMsg());
+                        }
+                        @Override
+                        public void onError(String error) {
+                        }
+                    });
         }
     }
 
@@ -118,6 +132,8 @@ public class PersonFragment extends Fragment {
                 getActivity().overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
                 break;
             case R.id.person_fragment_tv_sz:
+                startActivity(new Intent(getActivity(), UserActivity.class));
+                getActivity().overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
                 break;
             case R.id.person_fragment_iv_user:
                 break;

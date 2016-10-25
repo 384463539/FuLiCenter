@@ -13,12 +13,16 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import java.io.File;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import ucai.cn.day_filicenter.FuLiCenterApplication;
 import ucai.cn.day_filicenter.I;
+import ucai.cn.day_filicenter.MainActivity;
 import ucai.cn.day_filicenter.R;
 import ucai.cn.day_filicenter.bean.Result;
 import ucai.cn.day_filicenter.bean.UserAvatar;
@@ -26,6 +30,7 @@ import ucai.cn.day_filicenter.dao.UserDao;
 import ucai.cn.day_filicenter.utils.ImageLoader;
 import ucai.cn.day_filicenter.utils.L;
 import ucai.cn.day_filicenter.utils.OkHttpUtils;
+import ucai.cn.day_filicenter.utils.OnSetAvatarListener;
 import ucai.cn.day_filicenter.utils.SharedPreferencesUtils;
 
 public class UserActivity extends AppCompatActivity {
@@ -46,6 +51,8 @@ public class UserActivity extends AppCompatActivity {
     RelativeLayout userLayout4Ew;
     @Bind(R.id.user_bt_nologin)
     Button userBtNologin;
+
+    OnSetAvatarListener monSetAvatarListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,9 +84,12 @@ public class UserActivity extends AppCompatActivity {
         }
     }
 
-    @OnClick({R.id.user_av_back, R.id.user_layout2_user, R.id.user_layout3_nick, R.id.user_layout4_ew, R.id.user_bt_nologin})
+    @OnClick({R.id.user_av_back, R.id.user_layout2_user, R.id.user_layout3_nick, R.id.user_layout4_ew, R.id.user_bt_nologin, R.id.user_iv_user})
     public void onClick(final View view) {
         switch (view.getId()) {
+            case R.id.user_iv_user:
+                monSetAvatarListener = new OnSetAvatarListener(this, R.id.user_main_layout, FuLiCenterApplication.getUser().getMuserName(), I.AVATAR_TYPE_USER_PATH);
+                break;
             case R.id.user_av_back:
                 finish();
                 break;
@@ -107,7 +117,7 @@ public class UserActivity extends AppCompatActivity {
                                         .execute(new OkHttpUtils.OnCompleteListener<Result>() {
                                             @Override
                                             public void onSuccess(Result result) {
-                                                L.i(result.toString());
+                                                initData();
                                             }
 
                                             @Override
@@ -131,9 +141,44 @@ public class UserActivity extends AppCompatActivity {
                 SharedPreferencesUtils.getInstance(this).delectName();
                 FuLiCenterApplication.setUser(null);
                 overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
-                startActivity(new Intent(this, HomeActivity.class));
                 finish();
                 break;
         }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode != RESULT_OK) {
+            return;
+        }
+        monSetAvatarListener.setAvatar(requestCode, data, userIvUser);
+        L.i(requestCode + " aaa " + OnSetAvatarListener.REQUEST_CROP_PHOTO);
+        if (requestCode == OnSetAvatarListener.REQUEST_CROP_PHOTO) {
+            updataAvatar();
+        }
+    }
+
+    private void updataAvatar() {
+        UserAvatar user = FuLiCenterApplication.getUser();
+        File file = new File(OnSetAvatarListener.getAvatarPath(this, user.getMavatarPath() + "/" + user.getMuserName() + ".jpg"));
+        L.i("ss"+file.getAbsolutePath());
+        OkHttpUtils<Result> utils = new OkHttpUtils<>(this);
+        utils.setRequestUrl(I.REQUEST_UPDATE_AVATAR)
+                .addFile2(file)
+                .addParam(I.NAME_OR_HXID, user.getMuserName())
+                .addParam(I.AVATAR_TYPE, I.AVATAR_TYPE_USER_PATH)
+                .targetClass(Result.class)
+                .execute(new OkHttpUtils.OnCompleteListener<Result>() {
+                    @Override
+                    public void onSuccess(Result result) {
+                        ImageLoader.release();
+                        Toast.makeText(UserActivity.this, "头像上传成功", Toast.LENGTH_SHORT).show();
+                    }
+                    @Override
+                    public void onError(String error) {
+
+                    }
+                });
     }
 }

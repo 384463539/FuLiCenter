@@ -1,13 +1,13 @@
 package ucai.cn.day_filicenter;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -16,12 +16,10 @@ import com.google.gson.Gson;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import ucai.cn.day_filicenter.activity.HomeActivity;
 import ucai.cn.day_filicenter.activity.RegisterActivity;
 import ucai.cn.day_filicenter.bean.Result;
 import ucai.cn.day_filicenter.bean.UserAvatar;
 import ucai.cn.day_filicenter.dao.UserDao;
-import ucai.cn.day_filicenter.fragment.PersonFragment;
 import ucai.cn.day_filicenter.utils.L;
 import ucai.cn.day_filicenter.utils.MD5;
 import ucai.cn.day_filicenter.utils.OkHttpUtils;
@@ -39,6 +37,8 @@ public class MainActivity extends AppCompatActivity {
     TextView mainTvZ;
 
     String name, password;
+    @Bind(R.id.title_layout)
+    LinearLayout titleLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -127,5 +127,10 @@ public class MainActivity extends AppCompatActivity {
                 }
                 break;
         }
+    }
+
+    @OnClick(R.id.title_layout)
+    public void onClick() {
+        finish();
     }
 }

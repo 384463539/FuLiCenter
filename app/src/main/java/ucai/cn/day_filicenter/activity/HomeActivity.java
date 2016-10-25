@@ -36,24 +36,25 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     ArrayList<Fragment> fragmentList = new ArrayList<>();
     ArrayList<RadioButton> radioList = new ArrayList<>();
     ViewPager viewPager;
+    RadioButton rb;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+        rb = (RadioButton) findViewById(R.id.rb_personal);
         initView();
         setListener();
         initFragment();
     }
 
     @Override
-    public void onResume() {
+    protected void onResume() {
         super.onResume();
-        if (!isLogin()) {
-
+        if (rb.isChecked() && FuLiCenterApplication.getUser() == null) {
+            setFragmet(0);
         }
     }
-
 
     private void initFragment() {
         newgoodFragment = new NewgoodFragment();

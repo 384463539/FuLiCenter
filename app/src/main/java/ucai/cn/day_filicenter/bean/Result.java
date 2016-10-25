@@ -9,7 +9,7 @@ public class Result implements Serializable {
 
     private int retCode;
     private boolean retMsg;
-    private Object retData;
+    private RetData retData;
 
     public int getRetCode() {
         return retCode;
@@ -27,18 +27,18 @@ public class Result implements Serializable {
         this.retMsg = retMsg;
     }
 
-    public Object getRetData() {
+    public RetData getRetData() {
         return retData;
     }
 
-    public void setRetData(Object retData) {
+    public void setRetData(RetData retData) {
         this.retData = retData;
     }
 
     public Result() {
     }
 
-    public Result(int retCode, boolean retMsg, Object retData) {
+    public Result(int retCode, boolean retMsg, RetData retData) {
         this.retCode = retCode;
         this.retMsg = retMsg;
         this.retData = retData;
@@ -46,10 +46,10 @@ public class Result implements Serializable {
 
     @Override
     public String toString() {
-        return "Result{" +
-                "retCode=" + retCode +
-                ", retMsg=" + retMsg +
-                ", retData=" + retData +
+        return "{" +
+                "retCode:" + retCode +
+                ", retMsg:" + retMsg +
+                ", retData:" + retData +
                 '}';
     }
 }

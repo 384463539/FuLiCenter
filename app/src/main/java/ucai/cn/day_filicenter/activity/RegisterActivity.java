@@ -10,6 +10,9 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import java.io.File;
+import java.io.InputStream;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
