@@ -11,6 +11,8 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -20,7 +22,9 @@ import ucai.cn.day_filicenter.MainActivity;
 import ucai.cn.day_filicenter.R;
 import ucai.cn.day_filicenter.activity.UserActivity;
 import ucai.cn.day_filicenter.bean.MessageBean;
+import ucai.cn.day_filicenter.bean.Result;
 import ucai.cn.day_filicenter.bean.UserAvatar;
+import ucai.cn.day_filicenter.dao.UserDao;
 import ucai.cn.day_filicenter.utils.ImageLoader;
 import ucai.cn.day_filicenter.utils.L;
 import ucai.cn.day_filicenter.utils.OkHttpUtils;
@@ -68,6 +72,8 @@ public class PersonFragment extends Fragment {
     @Bind(R.id.person_fragment_layout_vip)
     RelativeLayout personFragmentLayoutVip;
 
+    UserAvatar user;
+
     public PersonFragment() {
     }
 
@@ -88,19 +94,9 @@ public class PersonFragment extends Fragment {
 
     private void initData() {
         L.i("个人中心数据刷新");
-        UserAvatar user = FuLiCenterApplication.getUser();
+        user = FuLiCenterApplication.getUser();
         if (user != null && user.getMuserName() != null) {
-            personFragmentTvNick.setText(user.getMuserNick());
-            String url = I.SERVER_ROOT + I.REQUEST_DOWNLOAD_AVATAR;
-            ImageLoader.build(url)
-                    .addParam(I.NAME_OR_HXID, user.getMuserName())
-                    .addParam(I.AVATAR_TYPE, user.getMavatarPath())
-                    .addParam(I.AVATAR_SUFFIY, user.getMavatarSuffix())
-                    .addParam(I.AVATAR_WIETH, 200 + "")
-                    .addParam(I.AVATAR_HEIGHT, 200 + "")
-                    .imageView(personFragmentIvUser)
-                    .defaultPicture(R.drawable.icon_account)
-                    .showImage(getActivity());
+            setAvatar();
             OkHttpUtils<MessageBean> utils = new OkHttpUtils<>(getActivity());
             utils.url(I.SERVER_ROOT + I.REQUEST_FIND_COLLECT_COUNT)
                     .addParam(I.Cart.USER_NAME, user.getMuserName())
@@ -108,13 +104,63 @@ public class PersonFragment extends Fragment {
                     .execute(new OkHttpUtils.OnCompleteListener<MessageBean>() {
                         @Override
                         public void onSuccess(MessageBean result) {
-                            personFragmentTvNum1.setText(result.getMsg());
+                            if (result != null&&result.isSuccess()) {
+                                personFragmentTvNum1.setText(result.getMsg());
+                            } else {
+                                personFragmentTvNum1.setText(0+"");
+                            }
                         }
+
                         @Override
                         public void onError(String error) {
                         }
                     });
+            updata(user.getMuserName());
         }
+    }
+
+    public void setAvatar() {
+        personFragmentTvNick.setText(user.getMuserNick());
+        String url = I.SERVER_ROOT + I.REQUEST_DOWNLOAD_AVATAR + "?" + I.NAME_OR_HXID + "=" + user.getMuserName()
+                + I.AND + I.AVATAR_TYPE + "=" + user.getMavatarPath() + I.AND + I.AVATAR_SUFFIY + "=" + user.getMavatarSuffix()
+                + I.AND + "width=200&height=200" + I.AND + user.getMavatarLastUpdateTime();
+        ImageLoader.build(url)
+                .imageView(personFragmentIvUser)
+                .defaultPicture(R.drawable.icon_account)
+                .showImage(getActivity());
+        L.i("下载");
+    }
+
+    public void updata(String name) {
+        OkHttpUtils<Result> utils = new OkHttpUtils<>(getActivity());
+        utils.setRequestUrl(I.REQUEST_FIND_USER)
+                .addParam(I.User.USER_NAME, name)
+                .targetClass(Result.class)
+                .execute(new OkHttpUtils.OnCompleteListener<Result>() {
+                    @Override
+                    public void onSuccess(Result result) {
+                        if (result != null) {
+                            String json = result.getRetData().toString();
+                            Gson gson = new Gson();
+                            UserAvatar userAvatar = gson.fromJson(json, UserAvatar.class);
+                            if (!userAvatar.equals(user)) {
+                                UserDao userDao = new UserDao(getActivity());
+                                boolean b = userDao.updataUser(userAvatar);
+                                if (b) {
+                                    FuLiCenterApplication.setUser(userAvatar);
+                                    user = userAvatar;
+                                    L.i("不同");
+                                    setAvatar();
+                                }
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onError(String error) {
+
+                    }
+                });
     }
 
 

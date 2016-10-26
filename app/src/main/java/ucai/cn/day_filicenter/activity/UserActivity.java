@@ -2,6 +2,8 @@ package ucai.cn.day_filicenter.activity;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -71,13 +73,10 @@ public class UserActivity extends AppCompatActivity {
         UserAvatar user = FuLiCenterApplication.getUser();
         if (user != null && user.getMuserName() != null) {
             userTvNick.setText(user.getMuserNick());
-            String url = I.SERVER_ROOT + I.REQUEST_DOWNLOAD_AVATAR;
+            String url = I.SERVER_ROOT + I.REQUEST_DOWNLOAD_AVATAR + "?" + I.NAME_OR_HXID + "=" + user.getMuserName()
+                    + I.AND + I.AVATAR_TYPE + "=" + user.getMavatarPath() + I.AND + I.AVATAR_SUFFIY + "=" + user.getMavatarSuffix()
+                    + I.AND + "width=200&height=200" + I.AND + user.getMavatarLastUpdateTime();
             ImageLoader.build(url)
-                    .addParam(I.NAME_OR_HXID, user.getMuserName())
-                    .addParam(I.AVATAR_TYPE, user.getMavatarPath())
-                    .addParam(I.AVATAR_SUFFIY, user.getMavatarSuffix())
-                    .addParam(I.AVATAR_WIETH, 200 + "")
-                    .addParam(I.AVATAR_HEIGHT, 200 + "")
                     .imageView(userIvUser)
                     .defaultPicture(R.drawable.icon_account)
                     .showImage(this);
@@ -162,7 +161,7 @@ public class UserActivity extends AppCompatActivity {
     private void updataAvatar() {
         UserAvatar user = FuLiCenterApplication.getUser();
         File file = new File(OnSetAvatarListener.getAvatarPath(this, user.getMavatarPath() + "/" + user.getMuserName() + ".jpg"));
-        L.i("ss"+file.getAbsolutePath());
+        final Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
         OkHttpUtils<Result> utils = new OkHttpUtils<>(this);
         utils.setRequestUrl(I.REQUEST_UPDATE_AVATAR)
                 .addFile2(file)
@@ -172,12 +171,11 @@ public class UserActivity extends AppCompatActivity {
                 .execute(new OkHttpUtils.OnCompleteListener<Result>() {
                     @Override
                     public void onSuccess(Result result) {
-                        ImageLoader.release();
+                        userIvUser.setImageBitmap(bitmap);
                         Toast.makeText(UserActivity.this, "头像上传成功", Toast.LENGTH_SHORT).show();
                     }
                     @Override
                     public void onError(String error) {
-
                     }
                 });
     }

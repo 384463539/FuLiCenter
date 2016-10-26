@@ -18,6 +18,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import ucai.cn.day_filicenter.activity.RegisterActivity;
 import ucai.cn.day_filicenter.bean.Result;
+import ucai.cn.day_filicenter.bean.RetData;
 import ucai.cn.day_filicenter.bean.UserAvatar;
 import ucai.cn.day_filicenter.dao.UserDao;
 import ucai.cn.day_filicenter.utils.L;
