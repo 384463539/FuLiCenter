@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -181,42 +182,71 @@ public class GoodsDetailsActivity extends AppCompatActivity {
             case R.id.goods_rb_add_cart:
                 break;
             case R.id.goods_rb_add_collect:
-                if (isCollect) {
-
+                UserAvatar user = FuLiCenterApplication.getUser();
+                if (user != null) {
+                    if (isCollect) {
+                        deleteCollect(user);
+                    } else {
+                        addCollect(user);
+                    }
                 } else {
 
                 }
+
                 break;
             case R.id.goods_rb_share:
                 break;
         }
     }
 
-    public void addCollect() {
-        UserAvatar user = FuLiCenterApplication.getUser();
-        if (user != null) {
-            OkHttpUtils<MessageBean> utils = new OkHttpUtils<>(this);
-            utils.setRequestUrl(I.REQUEST_ADD_COLLECT)
-                    .addParam(I.Cart.USER_NAME, user.getMuserName())
-                    .addParam(I.Cart.GOODS_ID, goodsid + "")
-                    .targetClass(MessageBean.class)
-                    .execute(new OkHttpUtils.OnCompleteListener<MessageBean>() {
-                        @Override
-                        public void onSuccess(MessageBean result) {
-                            if (result != null && result.isSuccess()) {
-                                isCollect = true;
-                            } else {
-                                isCollect = false;
-                            }
-                            updataCollect();
+    public void deleteCollect(UserAvatar user) {
+        OkHttpUtils<MessageBean> utils = new OkHttpUtils<>(this);
+        utils.setRequestUrl(I.REQUEST_DELETE_COLLECT)
+                .addParam(I.Cart.USER_NAME, user.getMuserName())
+                .addParam(I.Cart.GOODS_ID, goodsid + "")
+                .targetClass(MessageBean.class)
+                .execute(new OkHttpUtils.OnCompleteListener<MessageBean>() {
+                    @Override
+                    public void onSuccess(MessageBean result) {
+                        if (result != null && result.isSuccess()) {
+                            isCollect = false;
+                            Toast.makeText(GoodsDetailsActivity.this, "删除收藏成功", Toast.LENGTH_SHORT).show();
+                        } else {
+                            isCollect = true;
                         }
+                        updataCollect();
+                    }
 
-                        @Override
-                        public void onError(String error) {
+                    @Override
+                    public void onError(String error) {
 
+                    }
+                });
+    }
+
+    public void addCollect(UserAvatar user) {
+        OkHttpUtils<MessageBean> utils = new OkHttpUtils<>(this);
+        utils.setRequestUrl(I.REQUEST_ADD_COLLECT)
+                .addParam(I.Cart.USER_NAME, user.getMuserName())
+                .addParam(I.Cart.GOODS_ID, goodsid + "")
+                .targetClass(MessageBean.class)
+                .execute(new OkHttpUtils.OnCompleteListener<MessageBean>() {
+                    @Override
+                    public void onSuccess(MessageBean result) {
+                        if (result != null && result.isSuccess()) {
+                            isCollect = true;
+                            Toast.makeText(GoodsDetailsActivity.this, "收藏成功", Toast.LENGTH_SHORT).show();
+                        } else {
+                            isCollect = false;
                         }
-                    });
-        }
+                        updataCollect();
+                    }
+
+                    @Override
+                    public void onError(String error) {
+
+                    }
+                });
     }
 
     public void isCollect() {
