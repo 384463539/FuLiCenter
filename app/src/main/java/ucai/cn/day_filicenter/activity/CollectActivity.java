@@ -49,7 +49,6 @@ public class CollectActivity extends AppCompatActivity {
         setContentView(R.layout.activity_collect);
         ButterKnife.bind(this);
         initView();
-        initData(I.ACTION_DOWNLOAD, num);
         setListener();
     }
 
@@ -134,7 +133,7 @@ public class CollectActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-
+        initData(I.ACTION_DOWNLOAD, num);
     }
 
     private void initData(final int type, int num) {
