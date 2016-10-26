@@ -20,6 +20,7 @@ import ucai.cn.day_filicenter.FuLiCenterApplication;
 import ucai.cn.day_filicenter.I;
 import ucai.cn.day_filicenter.MainActivity;
 import ucai.cn.day_filicenter.R;
+import ucai.cn.day_filicenter.activity.CollectActivity;
 import ucai.cn.day_filicenter.activity.UserActivity;
 import ucai.cn.day_filicenter.bean.MessageBean;
 import ucai.cn.day_filicenter.bean.Result;
@@ -104,10 +105,10 @@ public class PersonFragment extends Fragment {
                     .execute(new OkHttpUtils.OnCompleteListener<MessageBean>() {
                         @Override
                         public void onSuccess(MessageBean result) {
-                            if (result != null&&result.isSuccess()) {
+                            if (result != null && result.isSuccess()) {
                                 personFragmentTvNum1.setText(result.getMsg());
                             } else {
-                                personFragmentTvNum1.setText(0+"");
+                                personFragmentTvNum1.setText("0");
                             }
                         }
 
@@ -170,9 +171,13 @@ public class PersonFragment extends Fragment {
         ButterKnife.unbind(this);
     }
 
-    @OnClick({R.id.person_fragment_iv_sz, R.id.person_fragment_tv_sz, R.id.person_fragment_iv_user, R.id.person_fragment_tv_num1, R.id.person_fragment_tv_num2, R.id.person_fragment_tv_num3, R.id.person_fragment_layout_buy, R.id.person_fragment_tv_pay, R.id.person_fragment_tv_hair, R.id.person_fragment_tv_get, R.id.person_fragment_tv_evaluation, R.id.person_fragment_tv_after, R.id.person_fragment_layout_card, R.id.person_fragment_layout_life, R.id.person_fragment_layout_store, R.id.person_fragment_layout_vip})
+    @OnClick({R.id.person_fragment_layout_my, R.id.person_fragment_iv_sz, R.id.person_fragment_tv_sz, R.id.person_fragment_iv_user, R.id.person_fragment_tv_num1, R.id.person_fragment_tv_num2, R.id.person_fragment_tv_num3, R.id.person_fragment_layout_buy, R.id.person_fragment_tv_pay, R.id.person_fragment_tv_hair, R.id.person_fragment_tv_get, R.id.person_fragment_tv_evaluation, R.id.person_fragment_tv_after, R.id.person_fragment_layout_card, R.id.person_fragment_layout_life, R.id.person_fragment_layout_store, R.id.person_fragment_layout_vip})
     public void onClick(View view) {
         switch (view.getId()) {
+            case R.id.person_fragment_layout_my:
+                startActivity(new Intent(getActivity(), CollectActivity.class));
+                getActivity().overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
+                break;
             case R.id.person_fragment_iv_sz:
                 startActivity(new Intent(getActivity(), UserActivity.class));
                 getActivity().overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);

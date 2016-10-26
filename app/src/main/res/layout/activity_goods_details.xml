@@ -27,14 +27,16 @@
             android:textSize="22sp" />
 
         <ImageView
-            android:id="@+id/goodsdetail_addcart"
+            android:id="@+id/goods_rb_add_cart"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_margin="5dp"
+            android:button="@null"
             android:src="@mipmap/bg_cart_selected" />
 
         <ImageView
+            android:id="@+id/goods_rb_add_collect"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
@@ -42,6 +44,7 @@
             android:src="@mipmap/bg_collect_in" />
 
         <ImageView
+            android:id="@+id/goods_rb_share"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
