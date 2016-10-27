@@ -186,7 +186,6 @@ public class CategotyActivity extends AppCompatActivity {
                 finish();
                 break;
             case R.id.category_av_tv1:
-//                sortList(myList);
                 flag = !flag;
                 sortList2(myList, flag);
                 break;

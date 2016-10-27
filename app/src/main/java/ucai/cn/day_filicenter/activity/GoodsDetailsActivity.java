@@ -30,6 +30,7 @@ import ucai.cn.day_filicenter.bean.MessageBean;
 import ucai.cn.day_filicenter.bean.PropertiesBean;
 import ucai.cn.day_filicenter.bean.UserAvatar;
 import ucai.cn.day_filicenter.utils.ImageLoader;
+import ucai.cn.day_filicenter.utils.L;
 import ucai.cn.day_filicenter.utils.MFGT;
 import ucai.cn.day_filicenter.utils.OkHttpUtils;
 import ucai.cn.day_filicenter.views.FlowIndicator;
@@ -179,14 +180,35 @@ public class GoodsDetailsActivity extends AppCompatActivity {
 
     @OnClick({R.id.goods_iv_back, R.id.goods_rb_add_cart, R.id.goods_rb_add_collect, R.id.goods_rb_share})
     public void onClick(View view) {
+        UserAvatar user = FuLiCenterApplication.getUser();
         switch (view.getId()) {
             case R.id.goods_iv_back:
                 MFGT.finish(this);
                 break;
             case R.id.goods_rb_add_cart:
+                if (user != null) {
+                    OkHttpUtils<MessageBean> utils = new OkHttpUtils<>(this);
+                    utils.setRequestUrl(I.REQUEST_ADD_CART)
+                            .addParam(I.Cart.GOODS_ID, goodsid + "")
+                            .addParam(I.Cart.COUNT, 1 + "")
+                            .addParam(I.Cart.IS_CHECKED, false + "")
+                            .targetClass(MessageBean.class)
+                            .execute(new OkHttpUtils.OnCompleteListener<MessageBean>() {
+                                @Override
+                                public void onSuccess(MessageBean result) {
+                                    L.i(result.toString());
+                                    if (result.isSuccess()) {
+                                        Toast.makeText(GoodsDetailsActivity.this, "添加至购物车成功", Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                                @Override
+                                public void onError(String error) {
+                                }
+                            });
+                }
                 break;
             case R.id.goods_rb_add_collect:
-                UserAvatar user = FuLiCenterApplication.getUser();
+
                 if (user != null) {
                     if (isCollect) {
                         deleteCollect(user);

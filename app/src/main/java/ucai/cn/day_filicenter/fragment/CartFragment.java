@@ -9,9 +9,11 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.TextView;
@@ -30,6 +32,7 @@ import ucai.cn.day_filicenter.bean.GoodsDetailsBean;
 import ucai.cn.day_filicenter.bean.MessageBean;
 import ucai.cn.day_filicenter.bean.UserAvatar;
 import ucai.cn.day_filicenter.utils.ImageLoader;
+import ucai.cn.day_filicenter.utils.L;
 import ucai.cn.day_filicenter.utils.OkHttpUtils;
 
 /**
@@ -39,11 +42,12 @@ public class CartFragment extends Fragment {
 
     View view;
     ArrayList<CartBean> myList = new ArrayList<>();
-    ;
     MyCartAdapter myAdapter;
     RecyclerView rv;
     LinearLayoutManager linearLayoutManager;
     View.OnClickListener listener;
+
+    TextView tvnull, tvh, tvs;
 
     public CartFragment() {
     }
@@ -85,6 +89,7 @@ public class CartFragment extends Fragment {
                                     public void onError(String error) {
                                     }
                                 });
+                        sunPrice();
                         break;
                     case R.id.cart_item_iv_delet:
                         final CartBean cb2 = (CartBean) v.getTag();
@@ -107,6 +112,7 @@ public class CartFragment extends Fragment {
 
                                         }
                                     });
+                            sunPrice();
                         } else {
                             utils.setRequestUrl(I.REQUEST_UPDATE_CART)
                                     .addParam(I.Cart.ID, cb2.getId() + "")
@@ -126,7 +132,12 @@ public class CartFragment extends Fragment {
                                         public void onError(String error) {
                                         }
                                     });
+                            sunPrice();
                         }
+                        break;
+                    case R.id.cart_item_rb_choos:
+                        CartBean cb3 = (CartBean) v.getTag();
+                        cb3.setIsChecked(v.isClickable());
                         break;
                 }
             }
@@ -136,7 +147,10 @@ public class CartFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        initData();
+        UserAvatar user = FuLiCenterApplication.getUser();
+        if (user != null) {
+            initData();
+        }
     }
 
     private void initData() {
@@ -150,7 +164,9 @@ public class CartFragment extends Fragment {
                         @Override
                         public void onSuccess(CartBean[] result) {
                             ArrayList<CartBean> list = utils.array2List(result);
+                            myList = list;
                             myAdapter.initList(list);
+                            sunPrice();
                         }
 
                         @Override
@@ -166,11 +182,40 @@ public class CartFragment extends Fragment {
         linearLayoutManager = new LinearLayoutManager(getActivity());
         rv.setAdapter(myAdapter);
         rv.setLayoutManager(linearLayoutManager);
+        tvnull = (TextView) view.findViewById(R.id.cart_tv_null);
+        tvh = (TextView) view.findViewById(R.id.cart_tv_h);
+        tvs = (TextView) view.findViewById(R.id.cart_tv_s);
     }
+
+    public void sunPrice() {
+        int sumprince = 0;
+        int ringprice = 0;
+
+        if (FuLiCenterApplication.getUser() != null && myList != null && myList.size() > 0) {
+            tvnull.setVisibility(View.GONE);
+            rv.setVisibility(View.VISIBLE);
+            for (CartBean cb : myList) {
+                if (cb.isChecked()) {
+                    L.i("OK");
+                    sumprince += cb.getCount() * Integer.parseInt(cb.getGoods().getCurrencyPrice().substring(1));
+                    ringprice += cb.getCount() * Integer.parseInt(cb.getGoods().getRankPrice().substring(1));
+                }
+            }
+            L.i("noOK");
+            tvh.setText("合计：" + ringprice);
+            tvs.setText("节省：" + (sumprince - ringprice));
+        } else {
+            tvh.setText("合计：0");
+            tvs.setText("节省：0");
+            tvnull.setVisibility(View.VISIBLE);
+            rv.setVisibility(View.GONE);
+        }
+    }
+
 
     class MyViewHolder extends RecyclerView.ViewHolder {
         ImageView iv, add, delect;
-        RadioButton check;
+        CheckBox check;
         TextView name, price, num;
         View view;
 
@@ -179,13 +224,14 @@ public class CartFragment extends Fragment {
             iv = (ImageView) itemView.findViewById(R.id.cart_item_iv);
             add = (ImageView) itemView.findViewById(R.id.cart_item_iv_add);
             delect = (ImageView) itemView.findViewById(R.id.cart_item_iv_delet);
-            check = (RadioButton) itemView.findViewById(R.id.cart_item_rb_choos);
+            check = (CheckBox) itemView.findViewById(R.id.cart_item_rb_choos);
             name = (TextView) itemView.findViewById(R.id.cart_item_tv_name);
             price = (TextView) itemView.findViewById(R.id.cart_item_tv_price);
             num = (TextView) itemView.findViewById(R.id.cart_item_rv_num);
             view = itemView;
             add.setOnClickListener(listener);
             delect.setOnClickListener(listener);
+            check.setOnClickListener(listener);
         }
     }
 
@@ -223,10 +269,11 @@ public class CartFragment extends Fragment {
             CartBean cartBean = myList.get(position);
             GoodsDetailsBean goods = cartBean.getGoods();
             holder.name.setText(goods.getGoodsName());
-            holder.price.setText(goods.getCurrencyPrice());
+            holder.price.setText(goods.getRankPrice());
             holder.num.setText("(" + cartBean.getCount() + ")");
             holder.add.setTag(cartBean);
             holder.delect.setTag(cartBean);
+            holder.check.setTag(cartBean);
             ImageLoader.build(I.SERVER_ROOT + I.REQUEST_DOWNLOAD_IMAGE)
                     .addParam(I.IMAGE_URL, goods.getGoodsThumb())
                     .imageView(holder.iv)
