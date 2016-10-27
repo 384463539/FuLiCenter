@@ -196,7 +196,6 @@ public class GoodsDetailsActivity extends AppCompatActivity {
                 } else {
                     startActivity(new Intent(GoodsDetailsActivity.this, MainActivity.class));
                 }
-
                 break;
             case R.id.goods_rb_share:
                 showShare();
