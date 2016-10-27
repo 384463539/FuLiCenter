@@ -14,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.TextView;
@@ -46,7 +47,6 @@ public class CartFragment extends Fragment {
     RecyclerView rv;
     LinearLayoutManager linearLayoutManager;
     View.OnClickListener listener;
-
     TextView tvnull, tvh, tvs;
 
     public CartFragment() {
@@ -135,10 +135,6 @@ public class CartFragment extends Fragment {
                             sunPrice();
                         }
                         break;
-                    case R.id.cart_item_rb_choos:
-                        CartBean cb3 = (CartBean) v.getTag();
-                        cb3.setIsChecked(v.isClickable());
-                        break;
                 }
             }
         };
@@ -148,7 +144,7 @@ public class CartFragment extends Fragment {
     public void onResume() {
         super.onResume();
         UserAvatar user = FuLiCenterApplication.getUser();
-        if (user != null) {
+        if (user != null && user.getMuserName() != null) {
             initData();
         }
     }
@@ -190,7 +186,6 @@ public class CartFragment extends Fragment {
     public void sunPrice() {
         int sumprince = 0;
         int ringprice = 0;
-
         if (FuLiCenterApplication.getUser() != null && myList != null && myList.size() > 0) {
             tvnull.setVisibility(View.GONE);
             rv.setVisibility(View.VISIBLE);
@@ -201,7 +196,6 @@ public class CartFragment extends Fragment {
                     ringprice += cb.getCount() * Integer.parseInt(cb.getGoods().getRankPrice().substring(1));
                 }
             }
-            L.i("noOK");
             tvh.setText("合计：" + ringprice);
             tvs.setText("节省：" + (sumprince - ringprice));
         } else {
@@ -231,7 +225,6 @@ public class CartFragment extends Fragment {
             view = itemView;
             add.setOnClickListener(listener);
             delect.setOnClickListener(listener);
-            check.setOnClickListener(listener);
         }
     }
 
@@ -265,21 +258,42 @@ public class CartFragment extends Fragment {
         }
 
         @Override
-        public void onBindViewHolder(MyViewHolder holder, int position) {
-            CartBean cartBean = myList.get(position);
+        public void onBindViewHolder(MyViewHolder holder, final int position) {
+            final CartBean cartBean = myList.get(position);
             GoodsDetailsBean goods = cartBean.getGoods();
             holder.name.setText(goods.getGoodsName());
             holder.price.setText(goods.getRankPrice());
             holder.num.setText("(" + cartBean.getCount() + ")");
             holder.add.setTag(cartBean);
             holder.delect.setTag(cartBean);
-            holder.check.setTag(cartBean);
+            holder.check.setChecked(cartBean.isChecked());
             ImageLoader.build(I.SERVER_ROOT + I.REQUEST_DOWNLOAD_IMAGE)
                     .addParam(I.IMAGE_URL, goods.getGoodsThumb())
                     .imageView(holder.iv)
                     .listener(parent)
                     .showImage(context);
-            holder.view.setTag(position);
+            holder.check.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, final boolean isChecked) {
+                    OkHttpUtils<MessageBean> utils = new OkHttpUtils<>(getActivity());
+                    utils.setRequestUrl(I.REQUEST_UPDATE_CART)
+                            .addParam(I.Cart.ID, cartBean.getId() + "")
+                            .addParam(I.Cart.COUNT, cartBean.getCount() + "")
+                            .addParam(I.Cart.IS_CHECKED, isChecked + "")
+                            .targetClass(MessageBean.class)
+                            .execute(new OkHttpUtils.OnCompleteListener<MessageBean>() {
+                                @Override
+                                public void onSuccess(MessageBean result) {
+                                    myList.get(position).setChecked(isChecked);
+                                    sunPrice();
+                                }
+
+                                @Override
+                                public void onError(String error) {
+                                }
+                            });
+                }
+            });
         }
 
         @Override

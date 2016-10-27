@@ -189,6 +189,7 @@ public class GoodsDetailsActivity extends AppCompatActivity {
                 if (user != null) {
                     OkHttpUtils<MessageBean> utils = new OkHttpUtils<>(this);
                     utils.setRequestUrl(I.REQUEST_ADD_CART)
+                            .addParam(I.Cart.USER_NAME,user.getMuserName())
                             .addParam(I.Cart.GOODS_ID, goodsid + "")
                             .addParam(I.Cart.COUNT, 1 + "")
                             .addParam(I.Cart.IS_CHECKED, false + "")
