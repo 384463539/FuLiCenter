@@ -114,10 +114,8 @@ public class CartFragment extends Fragment {
                                                 myAdapter.deleteCart(cb2);
                                             }
                                         }
-
                                         @Override
                                         public void onError(String error) {
-
                                         }
                                     });
                             sunPrice();
@@ -320,7 +318,6 @@ public class CartFragment extends Fragment {
                                     myList.get(position).setChecked(isChecked);
                                     sunPrice();
                                 }
-
                                 @Override
                                 public void onError(String error) {
                                 }
