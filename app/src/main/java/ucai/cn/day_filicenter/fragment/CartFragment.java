@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
@@ -28,6 +29,8 @@ import java.util.ArrayList;
 import ucai.cn.day_filicenter.FuLiCenterApplication;
 import ucai.cn.day_filicenter.I;
 import ucai.cn.day_filicenter.R;
+import ucai.cn.day_filicenter.activity.BuyActivity;
+import ucai.cn.day_filicenter.activity.GoodsDetailsActivity;
 import ucai.cn.day_filicenter.bean.CartBean;
 import ucai.cn.day_filicenter.bean.GoodsDetailsBean;
 import ucai.cn.day_filicenter.bean.MessageBean;
@@ -48,6 +51,10 @@ public class CartFragment extends Fragment {
     LinearLayoutManager linearLayoutManager;
     View.OnClickListener listener;
     TextView tvnull, tvh, tvs;
+    int sum = 0;
+    Button btnbuy;
+
+    ArrayList<CartBean> list = new ArrayList<>();
 
     public CartFragment() {
     }
@@ -135,9 +142,27 @@ public class CartFragment extends Fragment {
                             sunPrice();
                         }
                         break;
+                    case R.id.cart_item_tv_price:
+                        final CartBean cb3 = (CartBean) v.getTag();
+                        Intent intent = new Intent(getActivity(), GoodsDetailsActivity.class);
+                        intent.putExtra("goodsid", cb3.getGoodsId());
+                        startActivity(intent);
+                        getActivity().overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
+                        break;
                 }
             }
         };
+
+        btnbuy.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (list != null && list.size() > 0) {
+                    Intent intent = new Intent(getActivity(), BuyActivity.class);
+                    L.i(list.toString());
+                    startActivity(intent);
+                }
+            }
+        });
     }
 
     @Override
@@ -181,9 +206,11 @@ public class CartFragment extends Fragment {
         tvnull = (TextView) view.findViewById(R.id.cart_tv_null);
         tvh = (TextView) view.findViewById(R.id.cart_tv_h);
         tvs = (TextView) view.findViewById(R.id.cart_tv_s);
+        btnbuy = (Button) view.findViewById(R.id.cart_btn_bay);
     }
 
     public void sunPrice() {
+        list.clear();
         int sumprince = 0;
         int ringprice = 0;
         if (FuLiCenterApplication.getUser() != null && myList != null && myList.size() > 0) {
@@ -191,7 +218,7 @@ public class CartFragment extends Fragment {
             rv.setVisibility(View.VISIBLE);
             for (CartBean cb : myList) {
                 if (cb.isChecked()) {
-                    L.i("OK");
+                    list.add(cb);
                     sumprince += cb.getCount() * Integer.parseInt(cb.getGoods().getCurrencyPrice().substring(1));
                     ringprice += cb.getCount() * Integer.parseInt(cb.getGoods().getRankPrice().substring(1));
                 }
@@ -199,6 +226,7 @@ public class CartFragment extends Fragment {
             tvh.setText("合计：" + ringprice);
             tvs.setText("节省：" + (sumprince - ringprice));
         } else {
+            list.clear();
             tvh.setText("合计：0");
             tvs.setText("节省：0");
             tvnull.setVisibility(View.VISIBLE);
@@ -225,6 +253,7 @@ public class CartFragment extends Fragment {
             view = itemView;
             add.setOnClickListener(listener);
             delect.setOnClickListener(listener);
+            price.setOnClickListener(listener);
         }
     }
 
@@ -266,6 +295,7 @@ public class CartFragment extends Fragment {
             holder.num.setText("(" + cartBean.getCount() + ")");
             holder.add.setTag(cartBean);
             holder.delect.setTag(cartBean);
+            holder.price.setTag(cartBean);
             holder.check.setChecked(cartBean.isChecked());
             ImageLoader.build(I.SERVER_ROOT + I.REQUEST_DOWNLOAD_IMAGE)
                     .addParam(I.IMAGE_URL, goods.getGoodsThumb())
