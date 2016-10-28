@@ -53,6 +53,7 @@ public class CartFragment extends Fragment {
     TextView tvnull, tvh, tvs;
     int sum = 0;
     Button btnbuy;
+    int ringprice = 0;
 
     ArrayList<CartBean> list = new ArrayList<>();
 
@@ -158,7 +159,8 @@ public class CartFragment extends Fragment {
             public void onClick(View v) {
                 if (list != null && list.size() > 0) {
                     Intent intent = new Intent(getActivity(), BuyActivity.class);
-                    L.i(list.toString());
+                    intent.putExtra("sumprince", ringprice);
+                    intent.putExtra("cartlist", list);
                     startActivity(intent);
                 }
             }
@@ -212,7 +214,7 @@ public class CartFragment extends Fragment {
     public void sunPrice() {
         list.clear();
         int sumprince = 0;
-        int ringprice = 0;
+        ringprice = 0;
         if (FuLiCenterApplication.getUser() != null && myList != null && myList.size() > 0) {
             tvnull.setVisibility(View.GONE);
             rv.setVisibility(View.VISIBLE);
@@ -226,6 +228,7 @@ public class CartFragment extends Fragment {
             tvh.setText("合计：" + ringprice);
             tvs.setText("节省：" + (sumprince - ringprice));
         } else {
+            sumprince = 0;
             list.clear();
             tvh.setText("合计：0");
             tvs.setText("节省：0");
